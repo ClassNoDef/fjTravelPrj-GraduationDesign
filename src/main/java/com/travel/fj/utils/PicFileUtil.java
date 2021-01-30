@@ -18,6 +18,7 @@ public class PicFileUtil {
     public static final String PATH="G:/Code/AttractionPic";
     //public static final String PATH="/root/AttractionPic";
 
+
     private static   String getNewName(MultipartFile file){
         String originalFilename=file.getOriginalFilename();
         int idx= originalFilename.lastIndexOf(".");
@@ -26,6 +27,7 @@ public class PicFileUtil {
         return uuid.toString()+ext;
     }
 
+    @Deprecated
     public static String encodePicToBase64 (String[] fileList ) {
 
         StringBuffer encodePic=new StringBuffer();
