@@ -47,7 +47,7 @@ public class PicFileUtil {
 
             BASE64Encoder encoder = new BASE64Encoder();
             String singlEndodePic = encoder.encode(pic);
-            encodePic.append(singlEndodePic).append("###");
+            encodePic.append(singlEndodePic).append("***");
         }
         encodePic.delete(encodePic.length()-3,encodePic.length());
         return encodePic.toString();
