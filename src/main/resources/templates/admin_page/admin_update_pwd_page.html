@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <script th:src="@{/libs/jquery-validation/jquery.validate.min.js}" ></script>
+    <script th:src="@{/libs/jquery-validation/messages_zh.min.js}" ></script>
+    <script th:src="@{/libs/jquery/jQuery.md5.js}" ></script>
+    <style>
+        #errmsg{
+            color:red;
+        }
+
+        input.error { border: 1px solid red; }
+        label.error {
+
+            margin-top: 2px;
+            background:url("../../img/validation/unchecked.gif") no-repeat 5px center;
+
+            padding-left: 25px;
+
+
+            font-weight: bold;
+
+            color: #EA5200;
+        }
+        label.checked {
+
+            margin-top: 2px;
+            background:url("../../img/validation/checked.gif") no-repeat 5px center;
+
+            padding-left: 25px;
+
+
+            font-weight: bold;
+
+            color: blue;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+
+            $("#cpwd").change(function () {
+                $("#cpwd").removeData("previousValue")
+            });
+
+            $("#updAdminPwdForm").validate({
+                rules:{
+                    cPwd:{
+                        required:true,
+                        remote:{
+                            url:"/admin/checkCurrentPwd",
+                            type:"post",
+                            dataType:"json",
+                            data:{
+                                aid:$("#aid").val(),
+                                /*组合的数据里无法嵌套执行函数？*/
+                                pwd:function () {
+                                    var p=$("#cpwd").val()
+                                    return  $.md5(p)
+                                }
+                            }
+                        }
+                    },
+                    adminPwd:{
+                        required:true,
+                        minlength: 6,
+
+                    },
+                    rePwd:{
+                        required:true,
+                        minlength: 6,
+                        equalTo:"#pwd"
+                    },
+                },
+
+                messages:{
+
+                    cPwd:{
+                        required:"请输入当前管理员密码",
+                        remote:"当前管理员密码验证失败，请检查密码"
+                    },
+
+                    adminPwd:{
+                        required:"请输入密码",
+                        minlength: "密码太短！",
+                    },
+                    rePwd:{
+                        required:"请再次输入密码",
+                        minlength: "密码太短！",
+                        equalTo:"两次输入的密码不一致！"
+                    },
+                },
+
+                submitHandler:function(form) {
+                    form.submit();
+                },
+
+                success: function(label) {
+                    // set &nbsp; as text for IE
+                    label.html("&nbsp;").addClass("checked");
+                    label.addClass("checked").text("验证通过")
+                },
+
+                /*可以给未通过验证的元素加效果、闪烁等。*/
+                highlight: function(element/*非jQuery对象？*/, errorClass) {
+                    $(element).parent().find("." + errorClass).removeClass("checked");
+                }
+            })
+        })
+    </script>
+</head>
+<body>
+<div class="container">
+    <div id="wrapper">
+        <h3 class="py-3">修改密码</h3>
+        <form id="updAdminPwdForm" th:action="@{/admin/updatePwd}" th:object="${preUpdateAdmin}" method="post">
+            <div class="form-group">
+                <label >管理员ID</label>
+                <input type="text" class="form-control form-control-sm" id="aid" th:field="*{adminId}" readonly>
+            </div>
+            <div class="form-group">
+                <label >管理员名</label>
+                <input type="text" class="form-control form-control-sm" th:field="*{adminName}" readonly>
+            </div>
+            <div class="form-group">
+                <label >当前管理员密码:</label>
+                <input type="password" class="form-control form-control-sm" name="cPwd" id="cpwd">
+            </div>
+            <div class="form-group">
+                <label >新管理员密码:</label>
+                <input type="password" class="form-control form-control-sm" th:field="*{adminPwd}" id="pwd">
+            </div>
+            <div class="form-group">
+                <label >再次输入新密码:</label>
+                <input type="password" class="form-control form-control-sm" name="rePwd" >
+            </div>
+            <button class="btn btn-primary" type="submit">修改</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

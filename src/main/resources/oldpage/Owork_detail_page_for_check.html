@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <script th:inline="javascript">
+
+         $(function () {
+             //var id = [[${attracId}]]
+
+             $("#text").html([[${checkWorks.workText}]])
+             $("#status").append(("<option value='0'>未审核</option>"))
+             $("#status").append(("<option value='1'>已审核</option>"))
+             $("#status").append(("<option value='2'>已屏蔽</option>"))
+             $("#status").find("option[value=[[${checkWorks.workStatus}]]]").attr("selected",true);
+             $.ajax({
+                     url: "/work/getWorkPic/[[${checkWorks.workId}]]",
+                     type: "get",
+                     data: null,
+                     success: function (data) {
+                         console.log(data)
+                         var singlePic=data.data.split("###")
+                         console.log(singlePic.length)
+                         for (var i = 0; i < singlePic.length; i++) {
+                             $("#workPic").append
+                             ("<img id='pic' src='data:image/png;base64," + singlePic[i] + "'/>");
+                         }
+                     }
+                 }
+             )
+         }
+        )
+    </script>
+    <style>
+        #pic{
+            margin: 5px;
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+
+<ul>
+
+        <li th:text="${checkWorks.workTitle}"></li>
+        <li th:text="${#dates.format(checkWorks.workCreateTime,'yyyy-MM-dd HH:mm:ss ')}"></li>
+        <li th:text="${checkWorks.workType.noteTypeName}"></li>
+        <li th:text="${checkWorks.workAttrac.attracName}"></li>
+    <div id="text">
+
+    </div>
+    <div id="workPic">
+
+    </div>
+
+
+</ul>
+<form th:action="@{/workMgr/workCheck}" method="post">
+    <input type="hidden" name="id" th:value="${checkWorks.workId}" >
+    <div class="form-group">
+        <label >审核结果</label>
+        <select id="status" class="form-control" name="status">
+
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm"> 提交审核 </button>
+</form>
+</body>
+</html>

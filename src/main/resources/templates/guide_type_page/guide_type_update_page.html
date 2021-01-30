@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <style>
+        #errmsg{
+            color:red;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="wrapper">
+        <h3 class="py-3">修改指南类别</h3>
+        <p id="errmsg" th:text="${errmsg}"></p>      <!--???-->
+        <form action="#" th:action="@{/guideTypeMgr/updateGuideType}" th:object="${preUpdateGuideType}" method="post">
+            <div class="form-group">
+                <label >类型ID</label>
+                <input type="text" class="form-control form-control-sm" th:field="*{guideTypeId}"  readonly>
+            </div>
+            <div class="form-group">
+                <label >类型名</label>
+                <input type="text" class="form-control form-control-sm" th:field="*{guideTypeName}" >
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm"> 修改 </button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,95 @@
+﻿<!DOCTYPE HTML>
+<HTML lang="zh-lang" xmlns:th="http://www.thymeleaf.org">
+<HEAD>
+	<META>
+	 
+<META charset="UTF-8">
+	<TITLE></TITLE>
+	<LINK href="/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all">
+	<LINK href="/css/attracDetailPage/styles.css" rel="stylesheet" type="text/css" media="all">
+	<LINK href="/favicon.ico" rel="shortcut icon" type="image/x-icon">
+	<link rel="stylesheet" type="text/css" href="/css/mainPage/style.css" />
+	<script type="text/javascript" src="/libs/jquery/jquery-3.3.1.min.js"></script>
+	<script th:inline="javascript">
+		$(function () {
+			$("#text").html([[${checkWorks.workText}]])
+			$("#status").append(("<option value='0'>未审核</option>"))
+			$("#status").append(("<option value='1'>已审核</option>"))
+			$("#status").append(("<option value='2'>已屏蔽</option>"))
+			$("#status").append(("<option value='3'>用户已删除</option>"))
+			$("#status").find("option[value=[[${checkWorks.workStatus}]]]").attr("selected",true);
+			$.ajax({
+						url: "/work/getWorkPic/[[${checkWorks.workId}]]",
+						type: "get",
+						data: null,
+						success: function (data) {
+							console.log(data)
+							var singlePic=data.data.split("###")
+							console.log(singlePic.length)
+							for (var i = 0; i < singlePic.length; i++) {
+								$("#workPic").append
+								("<img id='pic'  src='data:image/png;base64," + singlePic[i] + "'/>");
+
+							}
+						}
+					}
+			)
+
+
+
+		})
+	</script>
+<style type="text/css">
+	#pic{
+		width: 871px;
+		height: 320px;
+	}
+</style>
+
+ 
+<META name="GENERATOR" content="MSHTML 11.00.10570.1001"></HEAD> 
+<BODY class="page-travels_lists page-travels_detail">
+
+<a th:href="@{/workMgr/loadAllWorks}">返回审核列表</a>
+<DIV class="lt-main"><!-- your code start -->				 
+<DIV class="lt-left">
+<DIV class="line-h"></DIV>
+<DIV class="userWrap">
+<DIV class="img">
+	<IMG alt="" th:src="@{'/user/getUserPic/'+${checkWorks.workAuthor.userId}}">
+</DIV>
+<DIV class="hidden">
+	<H3 th:text="${checkWorks.workTitle}">	</H3>
+	<H4 th:text="${checkWorks.workType.noteTypeName}+' |描述景点：'+${checkWorks.workAttrac.attracName}"></H4>
+	<h4 th:text="'发表于：'+${#dates.format(checkWorks.workCreateTime,'yyyy-MM-dd HH:mm:ss ')}"></h4>
+	<h4 th:text="'作者：'+${checkWorks.workAuthor.userName}"></h4>
+	<h4 th:text="'点赞数：'+${checkWorks.workLikeCount}"></h4>
+</DIV>
+</DIV>
+<DIV class="line-h"></DIV>
+<DIV class="content">
+
+	<p id="text"> </p>
+	<div id="workPic" >
+
+	</div>
+
+
+</DIV>
+	<form th:action="@{/workMgr/workCheck}" method="post">
+		<input type="hidden" name="id" th:value="${checkWorks.workId}" >
+		<div class="form-group">
+			<label >审核结果</label>
+			<select id="status" class="form-control" name="status">
+
+			</select>
+		</div>
+		<button type="submit" class="btn btn-primary btn-sm"> 提交审核 </button>
+	</form>
+</DIV>
+
+
+</DIV>
+
+ </BODY>
+</HTML>

@@ -1,0 +1,77 @@
+﻿<!DOCTYPE HTML>
+<HTML class="js cssanimations">
+<HEAD>
+    <META http-equiv="Content-Language" content="zh">
+    <TITLE>后台登录</TITLE>
+    <LINK href="/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <LINK href="/libs/fontawesome/css/fontawesome.css" rel="stylesheet">
+    <LINK href="/css/adminLogin/login.css" rel="stylesheet">
+    <SCRIPT src="/libs/jquery/jquery-3.3.1.min.js" charset="UTF-8"></SCRIPT>
+    <SCRIPT src="/libs/bootstrap/js/bootstrap.min.js" charset="UTF-8"></SCRIPT>
+<!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能
+警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <script src="/js/adminLogin/adminLoginFormCheck.js" ></script>
+<style type="text/css">
+#errmsg{color:red;}
+#errmsgU,#errmsgP,#veriCodeErr{color:red;}
+</style>
+<script type="text/javascript">
+    //绑定各个相关事件
+    //在DOM加载完成之后绑定，所以用$(function(){....../*各个绑定函数*/})
+    $(function(){
+        //点击更换验证码
+        $("img").click(function () {
+            this.src="/admin/vericode?"+Math.random();
+        });
+        //检查用户名
+        $("#adminName").blur(function () {
+            adminNameCheck()
+        })
+        //检查密码
+        $("#adminPwd").blur(function () {
+            adminPwdCheck()
+        })
+        //检查验证码
+        $("#veriCode").keyup(function () {
+            checkVeriCode()
+        })
+        //检查整个表单并提交
+        $("#submit_btn").click(function () {
+            submitForm()
+        })
+    })
+</script>
+<BODY>
+<DIV class="login">
+<DIV class="login-container">
+<DIV class="login-content text-left">
+<H2 class="text-center">网站后台登录</H2>
+<FORM action="#"  id="adminLoginForm" th:action="@{/admin/login}" th:object="${admin}" method="post">
+
+    <p id="errmsg" th:text="${errmsg}"></p>
+    <DIV class="form-group">
+ <INPUT  class="form-control" type="text" maxlength="40" id="adminName"th:field="*{adminName}" placeholder="输入管理员名" value="">
+</DIV>
+    <p id="errmsgU"></p>
+<DIV class="form-group">
+ <INPUT  class="form-control" type="password" id="adminPwd" th:field="*{adminPwd}" maxlength="20" placeholder="输入密码" value="">
+</DIV>
+    <p id="errmsgP"></p>
+<DIV class="form-group input-group verify-code">
+ <INPUT id="veriCode" class="form-control" maxlength="5" placeholder="填写验证码" value="" >
+ <SPAN class="input-group-addon code sendVerifyCode" >
+     <IMG  src="/admin/vericode" style="height: 40px" >
+ </SPAN>
+</DIV>
+    <p id="veriCodeErr"></p>
+<DIV class="form-group">
+ <BUTTON class="btn btn-default submit" type="button" id="submit_btn">登&nbsp;录</BUTTON>
+</DIV>
+</FORM>
+</DIV>
+</DIV>
+</DIV>
+</BODY>
+</HTML>

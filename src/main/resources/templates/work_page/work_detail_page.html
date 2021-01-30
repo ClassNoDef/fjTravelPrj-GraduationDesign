@@ -1,0 +1,242 @@
+﻿<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html PUBLIC "" ""><HTML lang="zh-lang"><HEAD><META 
+content="IE=11.0000" http-equiv="X-UA-Compatible">
+	 
+<META charset="UTF-8">	 <TITLE>[[${workDetail.workTitle}]] 游记详情</TITLE>
+<LINK href="/css/attracDetailPage/styles.css" rel="stylesheet" type="text/css" media="all">
+<link rel="stylesheet" type="text/css" href="/css/mainPage/style.css" />
+<link rel="stylesheet" href="/libs/layui/css/layui.css" media="all">
+<script type="text/javascript" src="/libs/jquery/jquery-3.3.1.min.js"></script>
+<script src="/libs/layui/layui.js"></script>
+<script th:inline="javascript">
+		$(function () {
+			$(".nav>ul>li").mouseenter(function (event) {
+				$(this).addClass("cur").siblings().removeClass("cur")
+				$(this).children(".yincang").stop().slideDown()
+
+			});
+			$(".nav>ul>li").mouseleave(function (event) {
+				$(this).removeClass("cur")
+				$(this).children(".yincang").stop().slideUp()
+			});
+
+			$("#searchOption").find("option[value='A']").attr("selected",true)
+			$("#sForm").attr("action","/attrac/showAttracs");
+			$("#searchOption").change(function () {
+				var se=$("#searchOption").val()
+				if(se==='A'){
+					$("#sForm").attr("action","/attrac/showAttracs");
+				}
+				if(se==='W'){
+					$("#sForm").attr("action","/work/showWork");
+				}
+				if(se==='G'){
+					$("#sForm").attr("action","/guide/showGuide");
+				}
+			})
+
+			$("#text").html([[${workDetail.workText}]])
+			var data = {
+				"workId": [[${workDetail.workId}]]
+			};
+
+			$("#like").click(function () {
+				$.ajax({
+					url: "/likeMgr/like",
+					type: "post",
+					async: true,
+					data: data,
+					dataType: 'json',
+					success: function (data) {
+						if (data.meta.success == false)
+							alert(data.meta.message);
+						else
+							location.reload()
+					}
+				})
+			})
+			$("#dislike").click(function () {
+				$.ajax({
+					url: "/likeMgr/disLike",
+					type: "post",
+					async: true,
+					data: data,
+					dataType: 'json',
+					success: function (data) {
+						if (data.meta.success == false)
+							alert(data.meta.message);
+						else
+							location.reload()
+					}
+				})
+			})
+			var id=[[${workDetail.workId}]]
+			$.ajax({
+				url: "/work/getWorkPic/" + id,
+				type: "get",
+				data: null,
+				success: function (data) {
+					console.log(data)
+					var singlePic = data.data.split("###")
+					//console.log(singlePic.length)
+					for (var i = 0; i < singlePic.length; i++) {
+						$("#plist").append
+						("<img  src='data:image/png;base64," + singlePic[i] + "'/>");
+					}
+				}
+			})
+		})
+
+
+</script>
+	<META name="GENERATOR" content="MSHTML 11.00.10570.1001">
+</HEAD>
+<BODY class="page-travels_lists page-travels_detail">
+
+
+<div class="header1">
+	<div class="header1-in">
+		<div class="logo">
+			<a href="/"><img src="/img/logo.jpg" alt="说行就行，随行" /></a>
+		</div>
+		<div class="search">
+
+				<div class="search-left">
+					<select id="searchOption" autocomplete="off">
+						<option value="A">景点搜索</option>
+						<option value="W">游记搜索</option>
+						<option value="G">指南搜索</option>
+					</select>
+				</div>
+			<form action="#" method="get" id="sForm">
+				<div class="search-center">
+					<input type="text" name="keyword" class="tex1" placeholder="请输入景点名" />
+				</div>
+				<button class="search-right" type="submit" ></button>
+			</form>
+		</div>
+		</form>
+
+		<div class="zuce">
+
+
+			<div th:if="${session.logonUser}!=null" >
+				<img  th:src="@{'/user/getUserPic/'+${session.logonUser.userId}}" style="width: 60px;height: 60px;border-radius: 30px;">
+
+				<span  class="youhuitu-inl" th:text="'欢迎'+${session.logonUser.userName}"></span>
+				<a th:href="@{/user/logout}"><p >退出登录</p></a>
+
+			</div>
+
+		</div>
+	</div>
+</div>
+<div class="nav">
+	<ul class="ul1">
+		<li class="level1 cur first"><a class="a1" href="/">首页</a></li>
+		<li class="level1"><a class="a1" href="#">&nbsp;&nbsp;||&nbsp;&nbsp;</a></li>
+		<li class="level1"><a  class="a1" href="">游记分类</a>
+			<ul class="yincang" >
+				<li th:each="w:${application.wType}">
+					<a th:href="@{'/work/showWork/'+${w.noteTypeId}}" th:text="${w.noteTypeName}"></a>
+				</li>
+			</ul>
+		</li>
+		<li class="level1">||</li>
+		<li class="level1">
+			<a class="a1" href="">指南分类</a>
+			<ul class="yincang" >
+
+				<li th:each="g:${application.gType}">
+					<a th:href="@{'/guide/showGuide/'+${g.guideTypeId}}" th:text="${g.guideTypeName}"></a>
+				</li>
+			</ul>
+		</li>
+		<li class="level1"><a class="a1" href="#">||</a></li>
+		<li class="level1">
+			<a class="a1"  th:if="${session.logonUser}==null" th:href="@{/user/login}">登录/注册</a>
+			<a class="a1" th:if="${session.logonUser}!=null" th:href="@{/user/userCenter}">个人中心</a>
+		</li>
+	</ul>
+</div>
+<DIV class="lt-main"><!-- your code start -->				 
+<DIV class="lt-left">
+<DIV class="line-h"></DIV>
+<DIV class="userWrap">
+<DIV class="img">
+	<IMG alt="" th:src="@{'/user/getUserPic/'+${workDetail.workAuthor.userId}}" >
+</DIV>
+<DIV class="hidden">
+	<H3 th:text="${workDetail.workTitle}">	</H3>
+	<H4 th:text="${workDetail.workType.noteTypeName}+' |描述景点：'+${workDetail.workAttrac.attracName}"></H4>
+ 	<h4 th:text="'发表于：'+${#dates.format(workDetail.workCreateTime,'yyyy-MM-dd HH:mm:ss ')}"></h4>
+	<h4 th:text="'作者：'+${workDetail.workAuthor.userName}"></h4>
+	<h4 th:text="'点赞数：'+${workDetail.workLikeCount}"></h4>
+</DIV>
+</DIV>
+<DIV class="line-h"></DIV>
+<DIV class="content">
+
+
+	<p id="text"> </p>
+	<div  id="plist" >
+
+	</div>
+
+
+
+</DIV>
+	<DIV class="linkcrumb">
+		<a th:if="${session.logonUser}== null" th:href="@{/user/login}"> 想点赞并收藏该游记？请登录</a>
+		<th:block th:if="${session.logonUser}!= null">
+			<th:block th:if="(${workDetail.workAuthor.userId}!=${session.logonUser.userId})">
+				<button th:if="${isLike}== true" id="dislike" >取消点赞与收藏</button>
+				<button th:if="${isLike}== false"  id="like">点赞并收藏</button>
+			</th:block>
+			<th:block th:if="(${workDetail.workAuthor.userId}==${session.logonUser.userId})">
+				<p>您是本文的作者</p>
+			</th:block>
+		</th:block>
+	</DIV>
+</DIV>
+<DIV class="lt-right">
+<DIV class="mod-sidebar">
+<DIV class="title">相关作品</DIV>
+<UL class="imgList">
+	<th:block th:if="${otherLinkWork}==null">
+		<li>
+			<p>无</p>
+		</li>
+
+	</th:block>
+	<th:block th:each="ol:${otherLinkWork}">
+  <LI th:if="${ol.workId}!=${workDetail.workId}">
+	  <A th:href="@{'/work/workDetail/'+${ol.workId}}">
+		  <IMG style="width: 260px;"
+  th:alt="${ol.workTitle}" th:src="@{'/work/getWorkSinglePic/'+${ol.workId}}">
+	  </A>
+
+	  <a th:href="@{'/work/workDetail/'+${ol.workId}}" th:text="${ol.workTitle}"></a>
+  </LI>
+	</th:block>
+ </UL>
+	<th:block th:if="${session.logonUser}== null">
+	<a  th:href="@{/user/login}">
+		<button class="layui-btn layui-btn-radius layui-btn-normal">想书写游记？请登录</button>
+	</a>
+	</th:block>
+	<th:block th:if="${session.logonUser}!= null">
+	<a th:if="(${workDetail.workAuthor.userId}==${session.logonUser.userId})"  th:href="@{'/work/createWork/'+${workDetail.workAttrac.attracId}}">
+		<button class="layui-btn layui-btn-radius layui-btn-normal">再写一篇</button>
+	</a>
+		<a th:if="(${workDetail.workAuthor.userId}!=${session.logonUser.userId})"  th:href="@{'/work/createWork/'+${workDetail.workAttrac.attracId}}">
+			<button class="layui-btn layui-btn-radius layui-btn-normal">我要写游记</button>
+		</a>
+	</th:block>
+</DIV>
+</DIV>
+</DIV>
+
+ </BODY>
+</HTML>

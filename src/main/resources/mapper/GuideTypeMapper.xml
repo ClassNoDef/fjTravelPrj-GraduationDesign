@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.travel.fj.dao.GuideTypeDao">
+    <insert id="createGuideType" parameterType="GuideType">
+        insert into tbl_guide_type(guide_type_name) values (#{guideTypeName})
+    </insert>
+    <select id="loadAllGuideType" resultType="GuideType" >
+        select * from tbl_guide_type
+    </select>
+    <select id="getGuideTypeById" parameterType="int" resultType="GuideType">
+        select * from tbl_guide_type where guide_type_id=#{id}
+    </select>
+    <update id="updateGuideType" parameterType="GuideType">
+        update tbl_guide_type
+        set guide_type_name=#{guideTypeName}
+        where guide_type_id=#{guideTypeId}
+    </update>
+
+    <update id="updateGuideCountData" parameterType="GuideType">
+        update tbl_guide_type
+        set guide_count=#{guideCount}
+        where guide_type_id=#{guideTypeId}
+    </update>
+    <delete id="deleteGuideType" parameterType="int">
+        delete from tbl_guide_type where guide_type_id=#{id}
+    </delete>
+</mapper>

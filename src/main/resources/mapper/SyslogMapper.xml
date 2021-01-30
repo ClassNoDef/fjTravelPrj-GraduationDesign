@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.travel.fj.dao.SysLogDao">
+
+    <insert id="createSyslog" parameterType="SysLog">
+        insert into tbl_sys_log(oper_ip,oper_action,oper_admin) values (#{operIP},
+        #{operAction},#{operAdmin.adminId})
+    </insert>
+
+    <select id="loadAllSysLog" resultMap="logData">
+        select * from  tbl_sys_log
+    </select>
+
+    <resultMap id="logData" type="SysLog">
+        <id column="log_id" property="logId"/>
+        <result column="log_time" property="logTime"/>
+        <result column="oper_ip" property="operIP"/>
+        <result column="oper_action" property="operAction"/>
+        <association property="operAdmin" column="oper_admin" javaType="Admin" select="com.travel.fj.dao.AdminDao.getAdminById"/>
+    </resultMap>
+
+</mapper>

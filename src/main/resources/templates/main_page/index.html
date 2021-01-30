@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>随行网，随心而行，随意而留</title>
+<link rel="shortcut icon" href="/img/bitbug_favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="/css/mainPage/style.css" />
+<link rel="stylesheet" type="text/css" href="/css/mainPage/global.css" />
+<link rel="stylesheet" type="text/css" href="/libs/bootstrap/css/bootstrap.css"/>
+<link rel="stylesheet" type="text/css" href="/libs/layui/css/layui.css" media="all"/>
+<script type="text/javascript" src="/libs/jquery/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/js/mainPage/js/component.js"></script>
+<script th:inline="javascript">
+    var session=[[${session.logonUser!=null}]]
+
+    $(function(){
+        // 导航
+        $(".nav>ul>li").mouseenter(function(event) {
+            $(this).addClass("cur").siblings().removeClass("cur")
+            $(this).children(".yincang").stop().slideDown()
+
+        });
+        $(".nav>ul>li").mouseleave(function(event) {
+            $(this).removeClass("cur")
+            $(this).children(".yincang").stop().slideUp()
+        });
+        // tejia
+        $(".tejia .wenzi span").mouseenter(function(event) {
+           $(this).addClass("cur").siblings().removeClass("cur")
+        });
+        // 品牌目的地
+        $(".pinpai_inr ul li").mouseenter(function(event) {
+            $(this).addClass("cur").siblings().removeClass("cur")
+        });
+          $(".pinpai_inr ul li").mouseleave(function(event) {
+            $(".pinpai_inr ul li").removeClass("cur")
+        });
+         // 
+         $(".tututu").mouseenter(function(event) {
+             $(this).children(".heibu").stop().slideDown()
+         });
+         $(".tututu").mouseleave(function(event) {
+             $(this).children(".heibu").stop().slideUp()
+         });
+
+        var nowing = 0
+        var $imglis = $(".banner .list0 li")
+        var $fadeCover = $(".fadeCover")
+        var fadeIntime = 500
+        var fadeOutime = 800
+        var $circle = $(".circle li")
+        var timer
+
+        // 定义函数
+        function rightbtn(){
+            // 先信号量的改变，
+
+            nowing++
+            if(nowing>$imglis.length-1){
+                nowing=0
+            }
+            // 再调用函数
+            dong();
+        }
+        // 定时器业务
+        timer = setInterval(rightbtn,2000)
+        $(".banner").mouseenter(function(){
+            clearInterval(timer)
+
+        })
+        $(".banner").mouseleave(function(){
+            clearInterval(timer)
+            timer = setInterval(rightbtn,2000)
+        })
+        // 点击小圆点业务
+        $circle.click(function(){
+            nowing = $(this).index()
+            dong()
+        })
+
+        function dong() {
+            // 先让fadecover淡入，让全局变白
+            $fadeCover.fadeIn(fadeIntime, function () {
+                // ,function(){
+                // 回调函数中，就表示fadecover淡入后做的事情。
+                // 换图是干蹦的，不是淡入淡出的换,进行暗箱操作，兄弟去cur，自己加cur
+                $imglis.eq(nowing).addClass('cur').siblings().removeClass('cur')
+                // 淡出让黑布小事
+                $(this).fadeOut(fadeOutime)
+            })
+            $circle.eq(nowing).addClass("cur").siblings().removeClass("cur")
+        }
+
+        $.ajax({
+                url: "https://restapi.amap.com/v3/ip?key=6e8391e2f0b8b47d9f8ea836e3b00d34&output=json",
+                type: "get",
+                data: null,
+                //async:false,
+                success: function (data) {
+                    var p=data.city
+                    $("#uplace").text("您当前位于："+data.city)
+
+                }
+            }
+
+
+        )
+
+                 $("#reloadAttracBtn").click(function () {
+                     randomAttracReflush(session)
+                 })
+                $("#reloadWorkBtn").click(function () {
+                    randomWorkReflush()
+                })
+                $("#reloadGuideBtn").click(function () {
+                    randomGuideReflush()
+                })
+                 $("#searchOption").find("option[value='A']").attr("selected",true)
+                $("#sForm").attr("action","/attrac/showAttracs");
+                $("#searchOption").change(function () {
+                    var se=$("#searchOption").val()
+                    if(se==='A'){
+                        $("#sForm").attr("action","/attrac/showAttracs");
+                    }
+                    if(se==='W'){
+                        $("#sForm").attr("action","/work/showWork");
+                    }
+                    if(se==='G'){
+                        $("#sForm").attr("action","/guide/showGuide");
+                    }
+                })
+
+
+    })
+</script>
+<script src="/libs/layui/layui.js"></script>
+<script type="text/javascript">
+        layui.use('carousel', function() {
+            var carousel = layui.carousel;
+
+            carousel.render({
+                elem: '#picPlay'
+                ,width: '1200px'//设置容器宽度
+                ,height:'320px'
+                , arrow: 'hover'
+                , autoplay: 'true'//始终显示箭头
+                , anim: 'fade' //切换动画方式
+                , interval: 5000
+            })
+        });
+</script>
+</head>
+<body>
+<div class="header1">
+    <div class="header1-in">
+        <div class="logo">
+            <a th:href="@{/}"><img src="/img/logo.jpg" alt="说行就行，随行" /></a>
+        </div>
+        <div class="search">
+
+            <div class="search-left">
+                <select id="searchOption" autocomplete="off">
+                    <option value="A">景点搜索</option>
+                    <option value="W">游记搜索</option>
+                    <option value="G">指南搜索</option>
+                </select>
+            </div>
+            <form action="#" method="get" id="sForm">
+            <div class="search-center" id="searchInput">
+                <input type="text" name="keyword" class="tex1" placeholder="请输入景点名" />
+            </div>
+            <button class="search-right" type="submit" ></button>
+            </form>
+        </div>
+
+
+        <div class="zuce">
+
+
+            <div th:if="${session.logonUser}!=null" >
+                <img  th:src="@{'/user/getUserPic/'+${session.logonUser.userId}}" style="width: 60px;height: 60px;border-radius: 30px;">
+
+                <span  class="youhuitu-inl" th:text="'欢迎'+${session.logonUser.userName}"></span>
+                <a th:href="@{/user/logout}"><p >退出登录</p></a>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="nav">
+    <ul class="ul1">
+        <li class="level1 cur first"><a class="a1" href="/">首页</a></li>
+        <li class="level1">&nbsp;&nbsp;||&nbsp;&nbsp;</li>
+        <li class="level1"><a  class="a1" href="">游记分类</a>
+            <ul class="yincang" >
+                <li th:each="w:${application.wType}">
+                <a th:href="@{'/work/showWork/'+${w.noteTypeId}}" th:text="${w.noteTypeName}"></a>
+                </li>
+            </ul>
+        </li>
+        <li class="level1">||</li>
+        <li class="level1">
+            <a class="a1" href="">指南分类</a>
+            <ul class="yincang" >
+
+                <li th:each="g:${application.gType}">
+                    <a th:href="@{'/guide/showGuide/'+${g.guideTypeId}}" th:text="${g.guideTypeName}"></a>
+                </li>
+            </ul>
+        </li>
+        <li class="level1">||</li>
+        <li class="level1">
+        <a class="a1"  th:if="${session.logonUser}==null" th:href="@{/user/login}">登录/注册</a>
+            <a class="a1" th:if="${session.logonUser}!=null" th:href="@{/user/userCenter}">个人中心</a>
+        </li>
+    </ul>
+</div>
+<div class="banner">
+
+    <DIV class=" layui-carousel" id="picPlay">
+        <div carousel-item id="piclist">
+            <img src="img/bg-1.jpg" alt="" />
+            <img src="img/bg-2.jpg" alt="" />
+            <img src="img/bg-3.jpg" alt="" />
+        </div>
+    </DIV>
+            <!--原始轮播图代码<ul class="list0">
+                <li class="cur"><a href="#"><img src="img/bg-1.jpg" alt="" /></a></li>
+                <li><a href="#"><img src="img/bg-2.jpg" alt="" /></a></li>
+                <li><a href="#"><img src="img/bg-3.jpg" alt="" /></a></li>
+              
+            </ul>-->
+    <!--<div class="fadeCover"></div>
+            <ul class="circle">
+                <li class="cur">1</li>
+                <li>2</li>
+                <li>3</li>
+
+            </ul>-->
+
+
+</div>
+<!-- 内容区域 -->
+<!-- 分享 -->
+
+<div class="tejia">
+    <p class="wenzi"><span class="cur">最新游记</span>
+        <a style="display:inline-block;float: right" id="reloadWorkBtn" >换一批</a>
+    </p>
+
+    <p class="sanjiao"></p>
+
+</div>
+<div class="youhuitu">
+
+    <ul id="randomWork">
+        <li th:each="w:${randomWork}">
+            <a th:href="@{'/work/workDetail/'+${w.workId}}">
+                <img th:src="@{'/work/getWorkSinglePic/'+${w.workId}}" alt="" />
+                <div class="youhuitu-in">
+                    <div class="youhuitu-inl">游记</div>
+                    <div class="youhuitu-inr" th:text="${w.workTitle}">标题</div>
+                    <div class="xiangxi">
+                        <span th:text="'作者：'+${w.workAuthor.userName }+' | 发表时间：'+${#dates.format(w.workCreateTime,'yyyy-MM-dd ')}"></span>&nbsp;
+                        <span th:text="'描述景点：'+${w.workAttrac.attracName }+' | 类型：'+${w.workType.noteTypeName}"></span>
+                    </div>
+                </div>
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="tejia">
+    <p class="wenzi"><span class="cur">最新指南</span>
+    <a style="display:inline-block;float: right" id="reloadGuideBtn" >换一批</a>
+    </p>
+    <p class="sanjiao"></p>
+</div>
+<div class="youhuitu">
+    <ul id="randomGuide">
+        <li th:each="g:${randomGuide}">
+            <a th:href="@{'/guide/guideDetail/'+${g.guideId}}">
+                <img th:src="@{'/guide/getGuideSinglePic/'+${g.guideId}}" alt="" />
+                <div class="youhuitu-in">
+                    <div class="youhuitu-inl">指南</div>
+                    <div class="youhuitu-inr" th:text="${g.guideTitle}">标题</div>
+                    <div class="xiangxi">
+                        <span th:text="' 发表时间：'+${#dates.format(g.guideCreateTime,'yyyy-MM-dd ')}"></span><br>
+                        <span th:text="'描述景点：'+${g.guideAttrac.attracName }+' | 类型：'+${g.guideType.guideTypeName}"></span>
+                    </div>
+                </div>
+            </a>
+        </li>
+    </ul>
+    
+</div>
+<div class="yaotiao">
+        <img src="img/yaotiao.jpg" alt="" />
+</div>
+<div class="pinpai">
+    <p class="wenzi">
+        景点推介
+    </p>
+
+</div>
+<div class="chujingyou">
+    <div class="chujingyou-l">
+        <button type="button" id="reloadAttracBtn">换一批</button>
+        <th:block th:if="${session.logonUser}==null">
+            <a th:href="@{/user/login}">想分享旅游经历？请登录</a>
+        </th:block>
+        <ul id="randomAttrac" >
+            <th:block th:each="ra:${randomAttrac}">
+                <li class="tututu">
+                    <img th:src="@{'/attrac/getAttracSinglePic/'+${ra.attracId}}" alt=""  />
+                    <a th:href="@{'/attrac/attracDetail/'+${ra.attracId}}"><span th:text="${ra.attracName}"></span></a>
+                    <th:block th:if="${session.logonUser}!=null">
+                        <button  ><a th:href="@{'/work/createWork/'+${ra.attracId}}" >为此景点书写游记</a> </button>
+                    </th:block>
+                </li>
+            </th:block>
+        </ul>
+    </div>
+
+    <div class="chujingyou-r">
+
+        <span class="ranklisthead"></span>
+        <img th:src="@{'/attrac/getAttracSinglePic/'+${topPopularAttrac.attracId}}" />
+
+
+        <div class="show">
+            <ul th:each="a:${popularAttrac}">
+                <li>
+                    <a th:href="@{'/attrac/attracDetail/'+${a.attracId}}"th:text="'【'+${aStat.index+1}+'】'+${a.attracName}"></a>
+
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+<div class="pinpai">
+    <p class="wenzi">
+        各地风光
+    </p>
+</div>
+<div class="pinpai_in">
+    <div class="pinpai_inl">
+        <img src="img/pinpai_left.png" alt="" />
+        <div class="pinpai_inlin">
+        </div>
+        <span class="pinpai_inl_span1" id="uplace"></span>
+    </div>
+    <div class="pinpai_inr">
+        <ul >
+            <th:block th:each="c:${city}">
+            <li ><img th:src="@{'/attrac/getCityPic/'+${c.cityName}}" alt="" />
+                <span ></span>  
+                <a th:href="@{'/attrac/showAttracs/'+${c.cityName}}"> <p th:text="${c.cityName}">福州</p></a>
+            </li>
+            </th:block>
+        </ul>
+    </div>
+</div>
+<div class="footer">
+    <div class="navfoot">
+   <ul>
+       <li><p href="#">-------</p></li>
+       <li><p href="#">-------</p></li>
+       <li><a href="/admin/login">后台登录</a></li>
+       <li><p href="#">-------</p></li>
+       <li><p href="#">-------</p></li>
+   </ul>
+   </div>
+</div>
+<!-- topback -->
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <script th:inline="javascript">
+
+        $(function () {
+            var id=[[${attracId}]]
+            $.ajax({
+                    url: "/attrac/getAttracPic/"+id,
+                    type: "get",
+                    data: null,
+                    success: function (data) {
+                        console.log(data)
+                        var singlePic=data.data.split("###")
+                        console.log(singlePic.length)
+                        for (var i = 0; i < singlePic.length; i++) {
+                            $("#attracPic").append
+                            ("<img id='pic' src='data:image/png;base64," + singlePic[i] + "'/>");
+                        }
+                    }
+                }
+            )})
+    </script>
+    <style>
+        #pic{
+            margin: 5px;
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+<ul>
+    <li th:text="${attracDetail.attracId}"></li>
+    <li th:text="${attracDetail.attracName}"></li>
+    <li th:text="${attracDetail.attracCity.cityName}">
+    </li>
+    <li th:text="${attracDetail.attracAdd}"></li>
+    <li th:text="${attracDetail.attracNoteCount}"></li>
+    <li th:text="${attracDetail.attracGuideCount}"></li>
+    <li th:text="${attracDetail.attracType.attracTypeName}"></li>
+    <li th:text="${attracDetail.attracTips}"></li>
+    <div id="attracPic">
+
+    </div>
+</ul>
+
+<ul>
+    <li th:each="w:${linkWork}">
+        <a th:href="@{'/work/workDetail/'+${w.workId}}" th:text="${w.workTitle}"></a>
+    </li>
+</ul>
+
+<a th:if="${session.logonUser}!=null" th:href="@{'/work/createWork/'+${attracDetail.attracId}}" th:text="'曾经去过？快来写下只属于你的'+${attracDetail.attracName}+'的游记吧！'"></a>
+<a th:if="${session.logonUser}==null" th:href="@{/user/login}">想为这个景点写游记？请先登录/注册！</a>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <style>
+        #errmsg{
+            color:red;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="wrapper">
+        <a th:href="@{/attracTypeMgr/loadAllAttracType}"> <button type="submit" class="btn btn-primary btn-sm"> 返回列表 </button></a>
+        <h3 class="py-3">新增景点类别</h3>
+        <p id="errmsg" th:text="${errmsg}"></p>      <!--???-->
+        <form action="#" th:action="@{/attracTypeMgr/createAttracType}" th:object="${newAttracType}" method="post">
+            <div class="form-group">
+                <label >新类型名</label>
+                <input type="text" class="form-control form-control-sm" th:field="*{attracTypeName}" >
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm"> 创建新景点类别 </button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

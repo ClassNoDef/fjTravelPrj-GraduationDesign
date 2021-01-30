@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<link rel="stylesheet" href="/css/adminCenter/amazeui.min.css" />
+	<link rel="stylesheet" href="/css/adminCenter/admin.css" />
+	<link rel="stylesheet" href="/libs/bootstrap/css/bootstrap.min.css">
+</head>
+<script src="/libs/jquery/jquery-3.3.1.min.js"></script>
+<script src="/js/adminCenter/mods/index.js"></script>
+<script src="/js/amazeui.min.js"></script>
+<script src="/js/Paged/attracPage.js"></script>
+
+<script type="text/javascript">
+
+	function deleteAttrac(id,pNo) {
+		$.ajax({
+			url: "/attracMgr/deleteAttrac/" + id,
+			type: "get",
+			async: true,
+			data: null,
+			dataType: 'json',
+			success: function (data) {
+				if (data.meta.success == true)
+					doQuery(pNo);
+			},
+			error:function () {
+				alert("err")
+			}
+		})
+	}
+
+	function recoveryAttrac(id,pNo) {
+		$.ajax({
+			url: "/attracMgr/recoveryAttrac/" + id,
+			type: "get",
+			async: true,
+			data: null,
+			dataType: 'json',
+			success: function (data) {
+				if (data.meta.success == true)
+					doQuery(pNo);
+			},
+			error:function () {
+				alert("err")
+			}
+		})
+	}
+
+	$(function () {
+		$.ajax({
+					url: "/attracMgr/getAttracType",
+					type: "get",
+					data: null,
+					//async:false,
+					success: function (data) {
+						console.log(data)
+						$("#qtype").prepend("<option value=''>请选择景点类型</option>");
+						for (var i = 0; i < data.data.length; i++) {
+
+							$("#qtype").append
+							("<option value='" + data.data[i].attracTypeId + "'>" + data.data[i].attracTypeName + "</option>");
+						}
+					}
+				}
+		);
+
+
+		$.ajax({
+					url: "/attracMgr/getCity",
+					type: "get",
+					data: null,
+					//async:false,
+					success: function (data) {
+						console.log(data)
+						$("#qcity").prepend("<option value=''>请选择城市</option>");
+						for (var i = 0; i < data.data.length; i++) {
+
+							$("#qcity").append
+							("<option value='" + data.data[i].cityId + "'>" + data.data[i].cityName+'/'+data.data[i].cityEngName + "</option>");
+						}
+					}
+				}
+		);
+
+		//初始加载全部数据
+		initResult()
+
+	});
+
+
+
+
+
+</script>
+
+
+<body>
+<div class="admin-content-body">
+	<div class="am-cf am-padding am-padding-bottom-0">
+		<div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">景点管理</strong><small></small></div>
+	</div>
+
+	<hr>
+
+	<div class="am-g">
+		<div class="am-u-sm-12 am-u-md-6">
+			<div class="am-btn-toolbar">
+				<div class="am-btn-group am-btn-group-xs">
+					<a href="/attracMgr/createAttrac" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</a>
+				</div>
+			</div>
+		</div>
+		<div class="am-u-sm-12 am-u-md-3">
+
+		</div>
+		<div class="am-form-inline" >
+			<div class="am-form-group">
+				<input type="text" id="qname" class="am-form-field" placeholder="请输入景点名称" >
+			</div>
+
+			<div class="am-form-group">
+				<select id="qcity" class="am-form-field" >
+
+				</select>
+				<span class="am-form-caret"></span>
+			</div>
+			<div class="am-form-group">
+				<input type="text"  id="qadd" class="am-form-field" placeholder="请输入具体地址" >
+			</div>
+			<div class="am-form-group">
+				<select id="qtype"  class="am-form-field">
+
+				</select>
+			</div>
+
+			<button id="subBtn" onclick='doQuery(1)' class="am-btn am-btn-default" type="button">搜索</button>
+
+
+
+
+
+		</div>
+		<div class="am-g">
+			<div class="am-u-sm-12">
+
+					<table class="am-table am-table-striped am-table-hover table-main">
+						<thead>
+						<tr>
+							<th align='center' class="table-id">ID</th>
+							<th align='center' class="table-type">景点名</th>
+							<th class="table-type">所在城市</th>
+							<th class="table-type">游记数</th>
+							<th class="table-type">指南数</th>
+							<th class="table-type">景点类型</th>
+							<th class="table-type">状态</th>
+							<th align='center'></th>
+							<th class="table-set">操作</th>
+							<th align='center'></th>
+
+						</tr>
+						</thead>
+						<tbody id="tableresult">
+
+						</tbody>
+					</table>
+
+
+					<hr>
+
+				<div class="col-12 text-right" id="page">
+				</div>
+			</div>
+		</div>
+</div>
+</div>
+
+</body>
+</html>

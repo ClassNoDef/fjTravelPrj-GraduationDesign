@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="/css/adminCenter/amazeui.min.css" />
+		<link rel="stylesheet" href="/css/adminCenter/admin.css" />
+		<link rel="stylesheet" href="/libs/bootstrap/css/bootstrap.min.css">
+	</head>
+
+	<script src="/js/adminCenter/mods/index.js"></script>
+	<script src="/libs/jquery/jquery-3.3.1.min.js"></script>
+	<script src="/js/Paged/guidePage.js"></script>
+	<script type="text/javascript">
+		$(function () {
+			$.ajax({
+						url: "/guideMgr/getGuideType",
+						type: "get",
+						data: null,
+						//async:false,
+						success: function (data) {
+							console.log(data)
+							$("#gqtype").append
+							("<option value=''>请选择指南类型</option>");
+							for (var i = 0; i < data.data.length; i++) {
+
+								$("#gqtype").append
+								("<option value='" + data.data[i].guideTypeId + "'>" + data.data[i].guideTypeName + "</option>");
+							}
+						}
+					}
+			);
+			init()
+
+			$("#query").click(function () {
+				doGQuery(1)
+			})
+		})
+
+
+	</script>
+	</head>
+
+	<body>
+		<div class="admin-content-body">
+			<div class="am-cf am-padding am-padding-bottom-0">
+				<div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">指南审核</strong><small></small></div>
+			</div>
+
+			<hr>
+
+			<div class="am-g">
+				<div class="am-u-sm-12 am-u-md-6">
+					<div class="am-btn-toolbar">
+						<div class="am-btn-group am-btn-group-xs">
+
+						</div>
+					</div>
+				</div>
+				<div class="am-u-sm-12 am-u-md-3">
+
+				</div>
+				<div class="am-u-sm-12 am-u-md-3">
+
+				</div>
+
+				<form class="am-form-inline" role="form" onsubmit="return false" action="##" method="post">
+					<div class="am-form-group">
+						<input type="text" id="gqname" class="am-form-field" placeholder="请输入指南标题关键字" >
+					</div>
+
+					<div class="am-form-group">
+						<select id="gqtype" class="am-form-field" >
+
+						</select>
+						<span class="am-form-caret"></span>
+					</div>
+					<div class="am-form-group">
+						<select id="gqstatus" class="am-form-field" >
+							<option value="">请选择指南状态</option>
+							<option value="0">未审核</option>
+							<option value="1">已上架</option>
+							<option value="2">已屏蔽</option>
+						</select>
+						<span class="am-form-caret"></span>
+					</div>
+					<button id="query" class="am-btn am-btn-default" type="button">搜索</button>
+					</form>
+			</div>
+			<div class="am-g">
+				<div class="am-u-sm-12">
+					<form class="am-form">
+						<h3>指南列表</h3>
+						<table class="am-table am-table-striped am-table-hover table-main">
+							<thead>
+								<tr>
+									<th class="table-type">ID</th>
+									<th class="table-type">标题</th>
+									<th class="table-type">作者</th>
+									<th class="table-type">创建时间</th>
+									<th class="table-type">作品类型</th>
+									<th class="table-type">描述景点</th>
+									<th class="table-type">状态</th>
+									<th class="table-set">操作</th>
+
+								</tr>
+							</thead>
+							<tbody id="gList">
+
+							</tbody>
+						</table>
+						<hr>
+					</form>
+					<div class="col-12 text-right" id="gpage">
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

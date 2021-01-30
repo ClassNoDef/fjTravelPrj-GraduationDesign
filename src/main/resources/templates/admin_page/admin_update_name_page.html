@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <script th:src="@{/libs/jquery-validation/jquery.validate.min.js}" ></script>
+    <script th:src="@{/libs/jquery-validation/messages_zh.min.js}" ></script>
+    <style>
+        #errmsg{
+            color:red;
+        }
+
+        input.error { border: 1px solid red; }
+        label.error {
+
+            margin-top: 2px;
+            background:url("../../img/validation/unchecked.gif") no-repeat 5px center;
+
+            padding-left: 25px;
+
+
+            font-weight: bold;
+
+            color: #EA5200;
+        }
+        label.checked {
+
+            margin-top: 2px;
+            background:url("../../img/validation/checked.gif") no-repeat 5px center;
+
+            padding-left: 25px;
+
+
+            font-weight: bold;
+
+            color: blue;
+        }
+    </style>
+    
+    <script type="text/javascript">
+        $(function () {
+            $("#updAdminName").validate({
+                rules:{
+                    adminName:{
+                        required:true,
+                        maxlength:12,
+
+                    },
+                },
+
+                messages:{
+                    adminName:{
+                        required:"请输入管理员名",
+                        maxlength:"管理员名太长！"
+                    },
+                },
+
+                submitHandler:function(form) {
+                    form.submit();
+                },
+
+                success: function(label) {
+                    // set &nbsp; as text for IE
+                    label.html("&nbsp;").addClass("checked");
+                    label.addClass("checked").text("验证通过")
+                },
+
+                /*可以给未通过验证的元素加效果、闪烁等。*/
+                highlight: function(element/*非jQuery对象？*/, errorClass) {
+                    $(element).parent().find("." + errorClass).removeClass("checked");
+                }
+            })
+
+
+        })
+    </script>
+</head>
+<body>
+<div class="container">
+    <div id="wrapper">
+        <h3 class="py-3">修改管理员名</h3>
+        <form id="updAdminName" th:action="@{/admin/updateName}" th:object="${preUpdateAdmin}" method="post">
+            <div class="form-group">
+                <label >管理员ID</label>
+                <input type="text" class="form-control form-control-sm" th:field="*{adminId}" readonly>
+            </div>
+            <div class="form-group">
+                <label >新管理员名</label>
+                <input type="text" class="form-control form-control-sm" th:field="*{adminName}" >
+            </div>
+            <button class="btn btn-primary" type="submit">修改</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,95 @@
+﻿<!DOCTYPE HTML>
+
+<HTML lang="zh-lang" xmlns:th="http://www.thymeleaf.org">
+<HEAD>
+	 
+<META charset="UTF-8">
+	<TITLE></TITLE>
+
+	<LINK href="/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all">
+	<LINK href="/css/attracDetailPage/styles.css" rel="stylesheet" type="text/css" media="all">
+	<LINK href="/favicon.ico" rel="shortcut icon" type="image/x-icon">
+	<link rel="stylesheet" type="text/css" href="/css/mainPage/style.css" />
+	<script type="text/javascript" src="/libs/jquery/jquery-3.3.1.min.js"></script>
+	<script th:inline="javascript">
+		$(function () {
+			$("#text").html([[${guideDetail.guideText}]])
+			$("#status").append(("<option value='0'>未审核</option>"))
+			$("#status").append(("<option value='1'>已审核</option>"))
+			$("#status").append(("<option value='2'>已屏蔽</option>"))
+			$("#status").find("option[value=[[${guideDetail.guideStatus}]]]").attr("selected",true);
+			$.ajax({
+						url: "/guide/getGuidePic/[[${guideDetail.guideId}]]",
+						type: "get",
+						data: null,
+						success: function (data) {
+							console.log(data)
+							var singlePic=data.data.split("###")
+							console.log(singlePic.length)
+							for (var i = 0; i < singlePic.length; i++) {
+								$("#guidePic").append
+								("<img id='pic'  src='data:image/png;base64," + singlePic[i] + "'/>");
+
+							}
+						}
+					}
+			)
+
+
+
+		})
+	</script>
+<style type="text/css">
+	#pic{
+		width: 871px;
+		height: 320px;
+	}
+</style>
+
+ 
+<META name="GENERATOR" content="MSHTML 11.00.10570.1001"></HEAD> 
+<BODY class="page-travels_lists page-travels_detail">
+
+<a th:href="@{/guideMgr/loadAllGuides}">返回审核列表</a>
+<DIV class="lt-main"><!-- your code start -->				 
+<DIV class="lt-left">
+<DIV class="line-h"></DIV>
+<DIV class="userWrap">
+<DIV class="img">
+	<!--<IMG alt="" th:src="@{'/user/getUserPic/'+${checkWorks.workAuthor.userId}}">-->
+</DIV>
+<DIV class="hidden">
+<H3 th:text="${guideDetail.guideTitle}">	</H3>
+<H4 th:text="${guideDetail.guideType.guideTypeName}"></H4>
+ <h4 th:text="'发表于：'+${#dates.format(guideDetail.guideCreateTime,'yyyy-MM-dd HH:mm:ss ')}"></h4>
+	<h4 th:text="'作者：'+${guideDetail.guideAuthor.adminName}"></h4>
+	<h4 th:text="'浏览量：'+${guideDetail.guideClickCount}"></h4>
+</DIV>
+</DIV>
+<DIV class="line-h"></DIV>
+<DIV class="content">
+
+	<p id="text"> </p>
+	<div id="guidePic" >
+
+	</div>
+
+
+</DIV>
+	<form th:action="@{/guideMgr/changeGuideStatus}" method="post">
+		<input type="hidden" name="id" th:value="${guideDetail.guideId}" >
+		<div class="form-group">
+			<label >审核结果</label>
+			<select id="status" class="form-control" name="status">
+
+			</select>
+		</div>
+		<button type="submit" class="btn btn-primary btn-sm"> 提交审核 </button>
+	</form>
+</DIV>
+
+
+</DIV>
+
+ </BODY>
+</HTML>

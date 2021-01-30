@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="/css/adminCenter/amazeui.min.css" />
+		<link rel="stylesheet" href="/css/adminCenter/admin.css" />
+		<link rel="stylesheet" href="">
+	</head>
+	<script src="/js/adminCenter/mods/index.js"></script>
+	</head>
+
+	<body>
+		<div class="admin-content-body">
+			<div class="am-cf am-padding am-padding-bottom-0">
+				<div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">我的收藏</strong><small></small></div>
+			</div>
+
+			<hr>
+
+			<div class="am-g">
+				<div class="am-u-sm-12 am-u-md-6">
+					<div class="am-btn-toolbar">
+						<div class="am-btn-group am-btn-group-xs">
+
+						</div>
+					</div>
+				</div>
+				<div class="am-u-sm-12 am-u-md-3">
+
+				</div>
+				<div class="am-u-sm-12 am-u-md-3">
+					<div class="am-input-group am-input-group-sm">
+
+					</div>
+				</div>
+			</div>
+			<div class="am-g">
+				<div class="am-u-sm-12">
+					<form class="am-form">
+						<table class="am-table am-table-striped am-table-hover table-main">
+							<thead>
+								<tr>
+									<th class="table-type">标题</th>
+									<th class="table-type">创建时间</th>
+									<th class="table-type">作品类型</th>
+									<th class="table-type">描述景点</th>
+									<th class="table-type">作者</th>
+
+									<th class="table-set">操作</th>
+
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<tr th:each="work:${myLikeWork}">
+									<td th:text="${work.workTitle}"></td>
+									<td th:text="${#dates.format(work.workCreateTime,'yyyy-MM-dd HH:mm:ss ')}"></td>
+									<td th:text="${work.workType.noteTypeName}"></td>
+									<td th:text="${work.workAttrac.attracName}"></td>
+									<td th:text="${work.workAuthor.userName}"></td>
+									<td><a th:href="@{'/work/userWorkDetail/'+${work.workId}}" class="am-btn am-btn-default am-btn-xs am-text-secondary" >详细信息</a></td>
+								</tr>
+							</tbody>
+						</table>
+
+
+						<hr>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

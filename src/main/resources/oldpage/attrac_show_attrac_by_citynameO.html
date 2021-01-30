@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <style>
+        #errmsg{
+            color:red;
+        }
+    </style>
+    <script th:inline="javascript">
+        $(function () {
+            var qData={
+
+                "queryAttracCity":[[${queryCityId}]],
+
+
+            };
+
+            $.ajax({
+                url : "/attrac/searchAttrac",
+                type : "post",
+                async : true,
+
+                data : qData,
+                dataType : 'json',
+                success : function(data) {
+                    console.log(data)
+                    $("#tableresult").html(" ")
+                    var str="";
+                    for(var i=0;i<data.length; i++){
+                        str += "<tr>" +
+                            "<td align='center'>" + data[i].attracId + "</td>" +
+                            "<td align='center'>" + data[i].attracName + "</td>" +
+                            "<td align='center'>" + data[i].attracCity.cityName + "</td>" +
+                            "<td align='center'>" + data[i].attracNoteCount + "</td>" +
+                            "<td align='center'>" + data[i].attracGuideCount + "</td>" +
+                            "<td align='center'>" + data[i].attracType.attracTypeName + "</td>" +
+                            "<td align='center'><a href='/attracMgr/attractionDetail/"+data[i].attracId+"'> 详细信息</a></td>" +
+                            "<td align='center'><a href='/attracMgr/updateAttraction/"+data[i].attracId+"'> 更新数据</a></td>"+
+                            "</tr>";
+                    }
+                    $("#tableresult").html(str)
+                }
+                }
+            );
+
+
+
+        });
+
+
+
+    </script>
+    <style>
+        .previewImg{
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+<table class="am-table">
+    <thead>
+    <tr>
+        <th >ID</th>
+        <th >景点名</th>
+        <th >所在城市</th>
+        <th >游记数</th>
+        <th>指南数</th>
+        <th>景点类型</th>
+        <th ></th>
+        <th >操作</th>
+        <th ></th>
+    </tr>
+    </thead>
+    <tbody id="tableresult">
+    </tbody>
+</table>
+</body>
+</html>

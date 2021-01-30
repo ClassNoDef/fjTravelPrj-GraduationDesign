@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.travel.fj.dao.AdminDao">
+<!--详细到对应接口-->
+    <insert id="createAdmin" parameterType="Admin">
+        insert into tbl_admin(admin_name,admin_pwd) values (#{adminName},#{adminPwd})
+    </insert>
+    <select id="loadAllAdmin" resultType="Admin">
+        select admin_id,admin_name,is_super,admin_status from tbl_admin
+    </select>
+
+    <select id="getAdminById" parameterType="int" resultType="Admin">
+        select admin_id,admin_name,admin_pwd,is_super,admin_status from tbl_admin where admin_id=#{id}
+    </select>
+    <select id="getAdminByName" parameterType="string" resultType="Admin">
+        select admin_id,admin_name,admin_pwd,is_super,admin_status from tbl_admin where admin_name=#{name}
+    </select>
+    <update id="updateAdminName" parameterType="Admin">
+        update  tbl_admin
+        <trim prefix="SET"
+        suffixOverrides="," >
+            <if test="adminName!=null"> admin_name = #{adminName},</if>
+    </trim>
+    where admin_id = #{adminId}
+    </update>
+    <update id="updateAdminPwd" parameterType="Admin">
+        update  tbl_admin
+        <trim prefix="SET"
+              suffixOverrides="," >
+            <if test="adminPwd!=null"> admin_pwd = #{adminPwd},</if>
+        </trim>
+        where admin_id = #{adminId}
+    </update>
+    <update id="updateAdminStatus" parameterType="Admin">
+        update  tbl_admin
+        <trim prefix="SET"
+              suffixOverrides="," >
+            <if test="adminStatus!=null"> admin_status = #{adminStatus},</if>
+        </trim>
+        where admin_id = #{adminId}
+    </update>
+</mapper>

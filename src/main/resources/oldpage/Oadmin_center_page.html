@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<ul>
+    <li>当前登录管理员信息</li>
+    <li th:text="${admin.adminId}"></li>
+    <li th:text="${admin.adminName}"></li>
+</ul>
+<a href="/admin/toCreateAdmin" th:if="${admin.adminId eq 1||admin.adminId eq 2}">新增管理员</a>
+<a href="/admin/adminManage" th:if="${admin.adminId eq 1||admin.adminId eq 2}">管理员管理</a>
+<a href="#" th:if="${not((admin.adminId eq 2)||(admin.adminId eq 1))}"> 更改当前管理员名</a>
+<a href="/admin/toUpdatePwd">更改当前管理员密码</a>
+<a href="/admin/userManage">管理用户</a>
+<a href="#">景点管理</a>
+<a href="/admin/logout">退出登录</a>
+</body>
+</html>

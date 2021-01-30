@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/libs/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                    url: "/workMgr/getNoteType",
+                    type: "get",
+                    data: null,
+                    //async:false,
+                    success: function (data) {
+                        console.log(data)
+                        $("#wqtype").append
+                        ("<option value=''>请选择</option>");
+                        for (var i = 0; i < data.length; i++) {
+
+                            $("#wqtype").append
+                            ("<option value='" + data[i].noteTypeId + "'>" + data[i].noteTypeName + "</option>");
+                        }
+                    }
+                }
+            );
+            init()
+
+            $("#query").click(function () {
+                var wqData={
+                    queryWorkTitle:$("#wqname").val(),
+                    // queryWorkAuthorId;
+                    queryWorkType:$("#wqtype").val(),
+                    // queryWorkAttracId;
+                }
+
+                $.ajax({
+                    url: "/workMgr/loadAllWorksAjax",
+                    type: "post",
+                    async: true,
+                    data: wqData,
+                    dataType: 'json',
+                    success: function (data) {
+                        $("#noCheck").html(" ")
+                        $("#checked").html(" ")
+                        $("#fb").html(" ")
+                        for(var i=0;i<data.length;i++){
+                            if(data[i].workStatus==0){
+                                $("#noCheck").append(
+                                    "<tr>" +
+                                    "<td>"+data[i].workId+"</td>"+
+                                    "<td>"+data[i].workTitle+"</td>"+
+                                    "<td>"+data[i].workAuthor.userName+"</td>"+
+                                    "<td>"+data[i].workCreateTime+"</td>"+
+                                    "<td>"+data[i].workType.noteTypeName+"</td>"+
+                                    "<td>"+data[i].workAttrac.attracName+"</td>"+
+                                    "<td><button>aa</button></td>"+
+                                    "</tr>"
+                                )
+                            }
+                            else if(data[i].workStatus==1){
+                                $("#checked").append(
+                                    "<tr>" +
+                                    "<td>"+data[i].workId+"</td>"+
+                                    "<td>"+data[i].workTitle+"</td>"+
+                                    "<td>"+data[i].workAuthor.userName+"</td>"+
+                                    "<td>"+data[i].workCreateTime+"</td>"+
+                                    "<td>"+data[i].workType.noteTypeName+"</td>"+
+                                    "<td>"+data[i].workAttrac.attracName+"</td>"+
+                                    "<td><button>aa</button></td>"+
+                                    "</tr>"
+                                )
+                            }
+
+                            else if(data[i].workStatus==2){
+                                $("#fb").append(
+                                    "<tr>" +
+                                    "<td>"+data[i].workId+"</td>"+
+                                    "<td>"+data[i].workTitle+"</td>"+
+                                    "<td>"+data[i].workAuthor.userName+"</td>"+
+                                    "<td>"+data[i].workCreateTime+"</td>"+
+                                    "<td>"+data[i].workType.noteTypeName+"</td>"+
+                                    "<td>"+data[i].workAttrac.attracName+"</td>"+
+                                    "<td><button>aa</button></td>"+
+                                    "</tr>"
+                                )
+                            }
+
+                        }
+                    }
+                })
+            })
+        })
+
+        function init() {
+            var wqData={
+                queryWorkTitle:"",
+            // queryWorkAuthorId;
+             queryWorkType:"",
+            // queryWorkAttracId;
+            }
+
+            $.ajax({
+                url: "/workMgr/loadAllWorksAjax",
+                type: "post",
+                async: true,
+                data: wqData,
+                dataType: 'json',
+                success: function (data) {
+                    for(var i=0;i<data.length;i++){
+                        if(data[i].workStatus==0){
+                            $("#noCheck").append(
+                                "<tr>" +
+                                    "<td>"+data[i].workId+"</td>"+
+                                    "<td>"+data[i].workTitle+"</td>"+
+                                    "<td>"+data[i].workAuthor.userName+"</td>"+
+                                    "<td>"+data[i].workCreateTime+"</td>"+
+                                    "<td>"+data[i].workType.noteTypeName+"</td>"+
+                                    "<td>"+data[i].workAttrac.attracName+"</td>"+
+                                    "<td><button>aa</button></td>"+
+                                "</tr>"
+                            )
+                        }
+                        else if(data[i].workStatus==1){
+                            $("#checked").append(
+                                "<tr>" +
+                                "<td>"+data[i].workId+"</td>"+
+                                "<td>"+data[i].workTitle+"</td>"+
+                                "<td>"+data[i].workAuthor.userName+"</td>"+
+                                "<td>"+data[i].workCreateTime+"</td>"+
+                                "<td>"+data[i].workType.noteTypeName+"</td>"+
+                                "<td>"+data[i].workAttrac.attracName+"</td>"+
+                                "<td><button>aa</button></td>"+
+                                "</tr>"
+                            )
+                        }
+
+                        else if(data[i].workStatus==2){
+                            $("#fb").append(
+                                "<tr>" +
+                                "<td>"+data[i].workId+"</td>"+
+                                "<td>"+data[i].workTitle+"</td>"+
+                                "<td>"+data[i].workAuthor.userName+"</td>"+
+                                "<td>"+data[i].workCreateTime+"</td>"+
+                                "<td>"+data[i].workType.noteTypeName+"</td>"+
+                                "<td>"+data[i].workAttrac.attracName+"</td>"+
+                                "<td><button>aa</button></td>"+
+                                "</tr>"
+                            )
+                        }
+
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+<input type="text" id="wqname">
+<select id="wqtype">
+
+
+</select>
+<button id="query">查询</button>
+<h1> 未检查</h1>
+<table >
+    <thead>
+    <tr>
+        <th >ID</th>
+        <th >标题</th>
+        <th >作者</th>
+        <th >创建时间</th>
+        <th >作品类型</th>
+        <th >描述景点</th>
+        <th >操作</th>
+
+    </tr>
+    </thead>
+    <tbody id="noCheck">
+
+    </tbody>
+</table>
+
+<h1> 已检查</h1>
+<table >
+    <thead>
+    <tr>
+        <th >ID</th>
+        <th >标题</th>
+        <th >作者</th>
+        <th >创建时间</th>
+        <th >作品类型</th>
+        <th >描述景点</th>
+        <th >操作</th>
+
+    </tr>
+    </thead>
+    <tbody id="checked">
+
+    </tbody>
+</table>
+
+<h1> 已屏蔽</h1>
+<table >
+    <thead>
+    <tr>
+        <th >ID</th>
+        <th >标题</th>
+        <th >作者</th>
+        <th >创建时间</th>
+        <th >作品类型</th>
+        <th >描述景点</th>
+        <th >操作</th>
+
+    </tr>
+    </thead>
+    <tbody id="fb">
+
+    </tbody>
+</table>
+</body>
+</html>

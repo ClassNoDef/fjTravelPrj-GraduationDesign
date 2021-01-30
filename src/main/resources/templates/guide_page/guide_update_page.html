@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <script th:src="@{/libs/ckeditor/ckeditor.js}" ></script>
+    <style>
+        #errmsg{
+            color:red;
+        }
+
+        #pic{
+            width: 300px;
+            height: 300px;
+            padding: 10px;
+        }
+    </style>
+    <script th:inline="javascript">
+
+
+        $(function () {
+
+            $("#guidePic").change(function () {
+                previewImg()
+            })
+                $.ajax({
+                        url: "/guideMgr/getGuideType",
+                        type: "get",
+                        data: null,
+                        //async:false,
+                        success: function (data) {
+                            console.log(data)
+                            for (var i = 0; i < data.data.length; i++) {
+
+                                $("#guidetype").append
+                                ("<option value='" + data.data[i].guideTypeId + "'>" + data.data[i].guideTypeName + "</option>");
+                            }
+                            $("#guidetype").find("option[value=[[${preUpdateGuide.guideType.guideTypeId}]]]").attr("selected",true);
+
+                        }
+                    }
+                );
+            $.ajax({
+                    url: "/attracMgr/getAttracPic/[[${preUpdateGuide.guideAttrac.attracId}]]",
+                    type: "get",
+                    data: null,
+                    success: function (data) {
+                        console.log(data.data)
+                        var singlePic=data.data.split("###")
+
+                        $("#attracCard").append
+                        ("<img class='card-img-top'" +
+                            "id='pic' src='data:image/png;base64," + singlePic[0] + "'/>");
+                        $("#attracCard").append("<h5 class='card-title' >"+[[${preUpdateGuide.guideAttrac.attracName}]]+"</h5>")
+                        $("#attracCard").append("<p class='card-text')>"+[[${preUpdateGuide.guideAttrac.attracCity.cityName}]]+"</p>")
+                        $("#attracCard").append("<p class='card-text')>"+[[${preUpdateGuide.guideAttrac.attracAdd}]]+"</p>")
+                        $("#attracCard").append("<a href='/attracMgr/attractionDetail/[[${preUpdateGuide.guideAttrac.attracId}]]' class='btn btn-primary' target='_blank'>查看景点详情</a>")
+
+
+
+                    }
+                }
+            )
+            $.ajax({
+                    url: "/guideMgr/getGuidePic/[[${preUpdateGuide.guideId}]]",
+                    type: "get",
+                    data: null,
+                    success: function (data) {
+                        console.log(data.data)
+                        var singlePic=data.data.split("###")
+
+                        for(var i=0;i<singlePic.length;i++)
+                        $("#guideImg").append
+                        ("<img " +
+                            "id='pic' src='data:image/png;base64," + singlePic[i] + "'/>");
+                    }
+                }
+            )
+            })
+
+        function previewImg(){
+            var extCheck=true;
+            //每次切换前，把之前的预览图片清空
+            document.getElementById("previewImg").innerHTML="";
+
+            //开始遍历图
+            var img=document.getElementById("guidePic").files;
+            if(img.length>5){
+                alert("最多五张图！")
+                var f=document.getElementById("guidePic");
+                f.value=''
+            }
+            for(var i=0;i<img.length;i++){
+                var name=img[i].name
+                var idx=name.lastIndexOf(".")
+                if(idx!=-1){
+                    var ext=name.substring(idx+1,name.length).toLowerCase()
+                }
+                console.log(ext)
+                if(ext==="jpg"||ext==="png"||ext==="jpeg");
+                else{extCheck=false}
+                console.log(extCheck)
+            }
+
+            if(extCheck==false){
+                alert("上传的图片中有不支持的格式")
+                var f=document.getElementById("guidePic");
+                f.value=''
+            }
+            for(var i=0;i<img.length;i++){
+                var file=img[i];
+                var url=URL.createObjectURL(file);
+                var box=document.createElement("img");
+                box.setAttribute("src",url);
+                //box.className='previewImg';
+                box.setAttribute("width",100+'px');
+                box.setAttribute("heigh",100+'px');
+                //append到页面上
+                var body=document.getElementsByClassName("previewImg")[0];
+                body.appendChild(box);
+            }
+        }
+ </script>
+</head>
+<body>
+<div class="container">
+    <div id="wrapper">
+        <h3 class="py-3">更新指南</h3>
+        <p id="errmsg" th:text="${errmsg}"></p>      <!--???-->
+        <form action="#" th:action="@{/guideMgr/updateGuide}" th:object="${preUpdateGuide}" method="post"  enctype="multipart/form-data">
+            <input type="hidden" th:field="*{guideId}">
+            <input type="hidden" th:field="*{guideStatus}">
+            <div class="form-group">
+                <label >标题</label>
+                <input type="text" class="form-control form-control-sm" th:field="*{guideTitle}" >
+            </div>
+            <div class="card" id="attracCard" style="width: 18rem;">
+                <input type="hidden" th:field="*{guideAttrac.attracId}">
+                <div class="card-body">
+
+                </div>
+            </div>
+            <div class="form-group">
+                <label >指南类型</label>
+                <select id="guidetype" class="form-control" name="guidetype">
+
+                </select>
+            </div>
+
+            <div id="previewImg" class="previewImg">
+
+            </div>
+            <div id="guideImg" class="guideImg">
+                <p>指南配图</p>
+            </div>
+            <input type="file" id="guidePic" name="guidePic" multiple="multiple" class="form-control-file">
+            <textarea th:field="*{guideText}" id="guideText" rows="10" cols="80">
+                请在此书写游记正文
+            </textarea>
+
+
+            <script>
+                CKEDITOR.replace( 'guideText' );
+            </script>
+            <button type="submit" class="btn btn-primary btn-sm"> 更新 </button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

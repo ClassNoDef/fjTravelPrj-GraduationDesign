@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登出成功</title>
+    <link rel="stylesheet" href="/libs/layui/css/layui.css" media="all">
+    <script src="/libs/layui/layui.js"></script>
+    <script type="text/javascript">
+        layui.use('layer', function(){
+            var layer = layui.layer;
+            layer.confirm('邮件发送成功!', {
+                    btn: ['关闭当前页'] ,//按钮
+                closeBtn:0
+                }, function(){
+                   window.close()
+                }
+            );
+        });
+
+
+
+    </script>
+</head>
+<body>
+</body>
+</html>

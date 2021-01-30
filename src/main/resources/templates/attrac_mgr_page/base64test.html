@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <script th:inline="javascript">
+        $(function () {
+            $.ajax({
+                    url: "/attracMgr/getAttracType",
+                    type: "get",
+                    data: null,
+                    //async:false,
+                    success: function (data) {
+                        console.log(data)
+                        $("#qtype").prepend("<option value=''>请选择</option>");
+                        for (var i = 0; i < data.data.length; i++) {
+
+                            $("#qtype").append
+                            ("<option value='" + data.data[i].attracTypeId + "'>" + data.data[i].attracTypeName + "</option>");
+                        }
+                    }
+                }
+            );
+
+
+            $.ajax({
+                    url: "/attracMgr/getCity",
+                    type: "get",
+                    data: null,
+                    //async:false,
+                    success: function (data) {
+                        console.log(data)
+                        $("#qcity").prepend("<option value=''>请选择</option>");
+                        for (var i = 0; i < data.data.length; i++) {
+
+                            $("#qcity").append
+                            ("<option value='" + data.data[i].cityId + "'>" + data.data[i].cityName+'/'+data.data[i].cityEngName + "</option>");
+                        }
+                    }
+                }
+            );
+
+            //初始加载全部数据
+            initResult()
+
+            $("#subBtn").click(function () {
+
+                var qData={
+                    "queryAttracName":$("#qName").val(),
+                    "queryAttracCity":$("#qcity").val(),
+                    "queryAttracAdd":$("#qAdd").val(),
+                    "queryAttracType":$("#qtype").val()
+                };
+
+                $.ajax({
+                    url : "/attracMgr/loadAllAttractionsJ",
+                    type : "post",
+                    async : true,
+
+                    data : qData,
+                    dataType : 'json',
+                    success : function(data) {
+                        console.log(data)
+                        $("#tableresult").html(" ")
+                        var str="";
+                        for(var i=0;i<data.length; i++){
+                            str += "<tr>" +
+                                "<td align='center'>" + data[i].attracId + "</td>" +
+                                "<td align='center'>" + data[i].attracName + "</td>" +
+                                "<td align='center'>" + data[i].attracCity.cityName + "</td>" +
+                                "<td align='center'>" + data[i].attracNoteCount + "</td>" +
+                                "<td align='center'>" + data[i].attracGuideCount + "</td>" +
+                                "<td align='center'>" + data[i].attracType.attracTypeName + "</td>" +
+                                "<td align='center'><a href='/attracMgr/attractionDetail/"+data[i].attracId+"'> 详细信息</a></td>" +
+                                "<td align='center'><a href='/attracMgr/updateAttraction/"+data[i].attracId+"'> 更新数据</a></td>"+
+                                "</tr>";
+                        }
+                        $("#tableresult").html(str)
+                    }
+                });
+            })
+        });
+
+
+        function initResult() {
+            var initData={
+                "queryAttracName":"",
+                "queryAttracCity":"",
+                "queryAttracAdd":"",
+                "queryAttracType":""
+            };
+
+            $.ajax({
+                url : "/attracMgr/loadAllAttractionsJ",
+                type : "post",
+                async : true,
+
+                data : initData,
+                dataType : 'json',
+                success : function(data) {
+                    console.log(data)
+                    var str="";
+                    for(var i=0;i<data.length; i++){
+                        str += "<tr>" +
+                            "<td align='center'>" + data[i].attracId + "</td>" +
+                            "<td align='center'>" + data[i].attracName + "</td>" +
+                            "<td align='center'>" + data[i].attracCity.cityName + "</td>" +
+                            "<td align='center'>" + data[i].attracNoteCount + "</td>" +
+                            "<td align='center'>" + data[i].attracGuideCount + "</td>" +
+                            "<td align='center'>" + data[i].attracType.attracTypeName + "</td>" +
+                            "<td align='center'><a href='/attracMgr/attractionDetail/"+data[i].attracId+"'> 详细信息</a></td>" +
+                            "<td align='center'><a href='/attracMgr/updateAttraction/"+data[i].attracId+"'> 更新数据</a></td>"+
+                            "</tr>";
+                    }
+                    $("#tableresult").html(str)
+                }
+            });
+        }
+    </script>
+
+
+</head>
+<body>
+
+<form onsubmit="return false" action="##" method="post"  >
+<input type="text"  id="qName">
+<select  id="qcity">
+
+</select>
+<input type="text"  id="qAdd">
+<select  id="qtype">
+
+</select>
+    <button id="subBtn">搜索</button>
+</form>
+<table class="am-table">
+    <thead>
+    <tr>
+        <th >ID</th>
+        <th >景点名</th>
+        <th >所在城市</th>
+        <th >游记数</th>
+        <th>指南数</th>
+        <th>景点类型</th>
+        <th ></th>
+        <th >操作</th>
+        <th ></th>
+    </tr>
+    </thead>
+    <tbody id="tableresult">
+    </tbody>
+</table>
+</body>
+</html>

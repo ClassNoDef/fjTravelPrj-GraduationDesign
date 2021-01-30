@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.travel.fj.dao.GuideDao">
+    <insert id="createGuide" parameterType="Guide">
+        insert into tbl_guides(guide_title,guide_author,guide_type,guide_attrac,guide_text,guide_pic_list)
+        values (#{guideTitle},#{guideAuthor.adminId},#{guideType.guideTypeId},#{guideAttrac.attracId},#{guideText},#{guidePicList});
+    </insert>
+
+    <select id="loadAllGuides" resultMap="guideData">
+         select * from tbl_guides
+    </select>
+    <select id="loadQueryGuides" resultMap="guideData">
+        select * from tbl_guides
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="helper.queryGuideTitle != null">
+                guide_title like concat('%',#{helper.queryGuideTitle},'%')
+            </if>
+            <if test="helper.queryGuideAuthorId != null">
+                AND guide_author = #{helper.queryGuideAuthorId}
+            </if>
+            <if test="helper.queryGuideAttracId!= null">
+                AND guide_attrac = #{helper.queryGuideAttracId}
+            </if>
+            <if test="helper.queryGuideType!= null">
+                AND guide_type = #{helper.queryGuideType}
+            </if>
+            <if test="helper.queryGuideStatus!= null">
+                AND guide_status = #{helper.queryGuideStatus}
+            </if>
+        </trim>
+    </select>
+
+    <select id="loadQueryAndPagedGuides" resultMap="guideData">
+        select * from tbl_guides
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="helper.queryGuideTitle != null">
+                guide_title like concat('%',#{helper.queryGuideTitle},'%')
+            </if>
+            <if test="helper.queryGuideAuthorId != null">
+                AND guide_author = #{helper.queryGuideAuthorId}
+            </if>
+            <if test="helper.queryGuideAttracId!= null">
+                AND guide_attrac = #{helper.queryGuideAttracId}
+            </if>
+            <if test="helper.queryGuideType!= null">
+                AND guide_type = #{helper.queryGuideType}
+            </if>
+            <if test="helper.queryGuideStatus!= null">
+                AND guide_status = #{helper.queryGuideStatus}
+            </if>
+        </trim>
+        order by guide_id asc limit #{startIndex},#{fetchSize}
+    </select>
+
+    <select id="getQueryGuideCount" resultType="int">
+        select count(*) from tbl_guides
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="helper.queryGuideTitle != null">
+                guide_title like concat('%',#{helper.queryGuideTitle},'%')
+            </if>
+            <if test="helper.queryGuideAuthorId != null">
+                AND guide_author = #{helper.queryGuideAuthorId}
+            </if>
+            <if test="helper.queryGuideAttracId!= null">
+                AND guide_attrac = #{helper.queryGuideAttracId}
+            </if>
+            <if test="helper.queryGuideType!= null">
+                AND guide_type = #{helper.queryGuideType}
+            </if>
+            <if test="helper.queryGuideStatus!= null">
+                AND guide_status = #{helper.queryGuideStatus}
+            </if>
+        </trim>
+    </select>
+
+    <select id="getGuideById" parameterType="int" resultMap="guideData">
+        select * from tbl_guides where guide_id=#{id};
+    </select>
+
+    <select id="getGuideByAdminId" parameterType="int" resultMap="guideData">
+         select * from tbl_guides where guide_author=#{authorId};
+    </select>
+
+
+    <select id="getGuideByGuideTypeId" parameterType="int" resultMap="guideData">
+         select * from tbl_guides where guide_type=#{typeId};
+    </select>
+
+    <select id="getGuideByGuideTypeIdU" parameterType="int" resultMap="guideData">
+         select * from tbl_guides where guide_type=#{typeId} and guide_status=1;
+    </select>
+
+    <select id="getGuideByAttracId" parameterType="int" resultMap="guideData">
+        select * from tbl_guides where guide_attrac=#{attracId};
+    </select>
+
+    <select id="getGuideByAttracIdU" parameterType="int" resultMap="guideData">
+        select * from tbl_guides where guide_attrac=#{attracId} and guide_status=1;
+    </select>
+
+    <select id="getRandomGuide" resultMap="guideData">
+        select *,RAND() as r from tbl_guides order by r desc limit 4
+    </select>
+
+    <select id="getRandomGuideU" resultMap="guideData">
+        select *,RAND() as r from tbl_guides where guide_status=1 order by r desc limit 4
+    </select>
+
+    <select id="getGuidePicById" parameterType="int" resultType="string">
+        select guide_pic_list from tbl_guides
+        where guide_id=#{id}
+    </select>
+
+    <update id="updateGuide" parameterType="Guide">
+        update tbl_guides set guide_title=#{guideTitle},guide_type=#{guideType.guideTypeId},guide_text=#{guideText},guide_pic_list=#{guidePicList}
+        where guide_id=#{guideId};
+    </update>
+<!--0 待审核/1 审核通过 2删除,屏蔽-->
+    <update id="updateGuideStatus" parameterType="Guide">
+        update tbl_guides set guide_status=#{guideStatus}
+        where guide_id=#{guideId};
+    </update>
+
+    <update id="updateGuideClickCount" parameterType="Guide">
+        update tbl_guides
+        <trim prefix="SET"
+              suffixOverrides="," >
+            <if test="guideClickCount!=null"> guide_click_count = #{guideClickCount},</if>
+        </trim>
+        where guide_id = #{guideId}
+    </update>
+
+    <resultMap id="guideData" type="Guide">
+        <id column="guide_id" property="guideId"/>
+        <result column="guide_title" property="guideTitle"/>
+        <result column="guide_create_time" property="guideCreateTime"/>
+        <result column="guide_text" property="guideText"/>
+        <result column="guide_status" property="guideStatus"/>
+        <result column="guide_pic_list" property="guidePicList"/>
+        <association property="guideAuthor" column="guide_author" javaType="Admin" select="com.travel.fj.dao.AdminDao.getAdminById"/>
+        <association property="guideType" column="guide_type" javaType="GuideType" select="com.travel.fj.dao.GuideTypeDao.getGuideTypeById"/>
+        <association property="guideAttrac" column="guide_attrac" javaType="Attraction" select="com.travel.fj.dao.AttractionDao.getAttractionByIdIgnoreBlocked"/>
+    </resultMap>
+</mapper>

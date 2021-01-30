@@ -1,0 +1,96 @@
+body {
+	background-color: rgb(245, 245, 245);
+}
+.login {
+	margin-top: 20px;
+}
+.login .login-container {
+	margin: 0px auto 30px; padding-top: 36px; padding-bottom: 32px; max-width: 660px; background-color: rgb(255, 255, 255);
+}
+.login .login-container .login-content {
+	margin: 0px auto; min-height: 500px; max-width: 330px;
+}
+.login .login-container .login-content h1 {
+	margin: 0px; padding: 0px; color: rgb(51, 51, 51); font-size: 3rem; font-weight: normal; vertical-align: middle;
+}
+.login .login-container .login-content form {
+	margin-top: 60px;
+}
+.login .login-container .login-content form .form-group {
+	margin-bottom: 22px;
+}
+.login .login-container .login-content form .input-group {
+	margin-bottom: 22px;
+}
+.login .login-container .login-content form input {
+	border-color: rgb(221, 221, 221); padding: 10px 12px; height: 40px; font-size: 1.4rem; box-shadow: none;
+}
+.login .login-container .login-content form input.form-control:hover {
+	border-color: rgb(18, 148, 141);
+}
+.login .login-container .login-content form input.form-control:focus {
+	border-color: rgb(18, 148, 141);
+}
+.login .login-container .login-content form .code {
+	padding: 0px; color: rgb(18, 148, 141); font-size: 12px; cursor: pointer; background-color: transparent;
+}
+.login .login-container .login-content form .btn.submit {
+	padding: 9px 12px; border-radius: 2px; border: currentColor; border-image: none; width: 100%; color: rgb(255, 255, 255); font-size: 1.4rem; margin-top: 2px; background-color: rgb(18, 148, 141);
+}
+.login .login-container .login-content a.forgot {
+	width: 100%; color: rgb(153, 153, 153); font-size: 1.2rem; text-decoration: none; margin-top: 24px; display: block;
+}
+.login #tip-message {
+	padding: 15px 0px; text-align: center; color: rgb(230, 78, 23);
+}
+.form-control-feedback.fa {
+	height: 38px; line-height: 38px;
+}
+.verify-code.has-success .form-control-feedback {
+	right: 110px; z-index: 4;
+}
+.verify-code.has-error .form-control-feedback {
+	right: 110px; z-index: 4;
+}
+.form-group small.help-block {
+	margin: 0px; left: 14px; top: 40px; display: none; position: absolute;
+}
+.verify-code.has-error .input-group-addon.code {
+	cursor: not-allowed;
+}
+.register-container .register-role form .has-error .code {
+	cursor: not-allowed;
+}
+.has-success .input-group-addon {
+	border-color: rgb(204, 204, 204);
+}
+.has-error .input-group-addon {
+	border-color: rgb(204, 204, 204);
+}
+@media all and (max-width:992px)
+{
+.login {
+	padding-top: 20px;
+}
+.login .login-container {
+	padding-top: 20px; margin-bottom: 0px;
+}
+.login .login-container .login-content {
+	min-height: 400px;
+}
+}
+@media all and (max-width:767px)
+{
+.login {
+	padding-top: 5px;
+}
+.login .login-container {
+	padding-top: 20px;
+}
+.login .login-container .login-content {
+	min-height: 300px;
+}
+.login .login-container .login-content form {
+	margin-top: 20px;
+}
+}

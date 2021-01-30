@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <script th:src="@{/libs/ckeditor/ckeditor.js}" ></script>
+    <style>
+        #errmsg{
+            color:red;
+        }
+    </style>
+    <script th:inline="javascript">
+
+
+        $(function () {
+
+            $("#guidePic").change(function () {
+                previewImg()
+            })
+                $.ajax({
+                        url: "/guideMgr/getGuideType",
+                        type: "get",
+                        data: null,
+                        //async:false,
+                        success: function (data) {
+                            console.log(data)
+                            for (var i = 0; i < data.data.length; i++) {
+
+                                $("#guidetype").append
+                                ("<option value='" + data.data[i].guideTypeId + "'>" + data.data[i].guideTypeName + "</option>");
+                            }
+                        }
+                    }
+                );
+            $.ajax({
+                    url: "/attracMgr/getAttracPic/[[${newGuide.guideAttrac.attracId}]]",
+                    type: "get",
+                    data: null,
+                    success: function (data) {
+                        console.log(data.data)
+                        var singlePic=data.data.split("###")
+
+                        $("#attracCard").append
+                        ("<img class='card-img-top'" +
+                            "id='pic' src='data:image/png;base64," + singlePic[0] + "'/>");
+                        $("#attracCard").append("<h5 class='card-title' >"+[[${newGuide.guideAttrac.attracName}]]+"</h5>")
+                        $("#attracCard").append("<p class='card-text')>"+[[${newGuide.guideAttrac.attracCity.cityName}]]+"</p>")
+                        $("#attracCard").append("<p class='card-text')>"+[[${newGuide.guideAttrac.attracAdd}]]+"</p>")
+                        $("#attracCard").append("<a href='/attracMgr/attractionDetail/[[${newGuide.guideAttrac.attracId}]]' class='btn btn-primary' target='right'>查看景点详情</a>")
+
+
+
+                    }
+                }
+            )
+            })
+
+        function previewImg(){
+            var extCheck=true;
+            //每次切换前，把之前的预览图片清空
+            document.getElementById("previewImg").innerHTML="";
+
+            //开始遍历图
+            var img=document.getElementById("guidePic").files;
+            if(img.length>5){
+                alert("最多五张图！")
+                var f=document.getElementById("guidePic");
+                f.value=''
+            }
+            for(var i=0;i<img.length;i++){
+                var name=img[i].name
+                var idx=name.lastIndexOf(".")
+                if(idx!=-1){
+                    var ext=name.substring(idx+1,name.length).toLowerCase()
+                }
+                console.log(ext)
+                if(ext==="jpg"||ext==="png"||ext==="jpeg");
+                else{extCheck=false}
+                console.log(extCheck)
+            }
+
+            if(extCheck==false){
+                alert("上传的图片中有不支持的格式")
+                var f=document.getElementById("guidePic");
+                f.value=''
+            }
+            for(var i=0;i<img.length;i++){
+                var file=img[i];
+                var url=URL.createObjectURL(file);
+                var box=document.createElement("img");
+                box.setAttribute("src",url);
+                //box.className='previewImg';
+                box.setAttribute("width",100+'px');
+                box.setAttribute("heigh",100+'px');
+                //append到页面上
+                var body=document.getElementsByClassName("previewImg")[0];
+                body.appendChild(box);
+            }
+        }
+ </script>
+</head>
+<body>
+<div class="container">
+    <div id="wrapper">
+        <a th:href="@{/attracMgr/loadAllAttractions}"> <button type="submit" class="btn btn-primary btn-sm"> 返回列表 </button></a>
+        <h3 class="py-3">新建指南</h3>
+        <p id="errmsg" th:text="${errmsg}"></p>      <!--???-->
+        <form action="#" th:action="@{/guideMgr/createGuide}" th:object="${newGuide}" method="post"  enctype="multipart/form-data">
+            <div class="form-group">
+                <label >标题</label>
+                <input type="text" class="form-control form-control-sm" th:field="*{guideTitle}" >
+            </div>
+            <div class="card" id="attracCard" style="width: 18rem;">
+                <input type="hidden" th:field="*{guideAttrac.attracId}">
+                <div class="card-body">
+
+                </div>
+            </div>
+            <div class="form-group">
+                <label >指南类型</label>
+                <select id="guidetype" class="form-control" name="guidetype">
+
+                </select>
+            </div>
+            <textarea th:field="*{guideText}" id="workText" rows="10" cols="80">
+                请在此书写游记正文
+            </textarea>
+
+            <div id="previewImg" class="previewImg">
+
+            </div>
+            <input type="file" id="guidePic" name="guidePic" multiple="multiple" class="form-control-file">
+            <script>
+                CKEDITOR.replace( 'guideText' );
+            </script>
+            <button type="submit" class="btn btn-primary btn-sm"> 创建指南 </button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

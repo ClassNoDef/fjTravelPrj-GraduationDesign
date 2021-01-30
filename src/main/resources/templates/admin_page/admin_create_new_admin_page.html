@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <script th:src="@{/libs/jquery-validation/jquery.validate.min.js}" ></script>
+    <script th:src="@{/libs/jquery-validation/messages_zh.min.js}" ></script>
+    <style>
+        #errmsg{
+            color:red;
+        }
+
+        input.error { border: 1px solid red; }
+        label.error {
+
+            margin-top: 2px;
+            background:url("../../img/validation/unchecked.gif") no-repeat 5px center;
+
+            padding-left: 25px;
+
+
+            font-weight: bold;
+
+            color: #EA5200;
+        }
+        label.checked {
+
+            margin-top: 2px;
+            background:url("../../img/validation/checked.gif") no-repeat 5px center;
+
+            padding-left: 25px;
+
+
+            font-weight: bold;
+
+            color: blue;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            $("#adminRegForm").validate({
+                rules:{
+
+                    adminName:{
+                        required:true,
+                        maxlength:12,
+
+                    },
+                    adminPwd:{
+                        required:true,
+                        minlength: 6,
+
+                    },
+                    rePwd:{
+                        required:true,
+                        minlength: 6,
+                        equalTo:"#pwd"
+                    },
+                },
+
+                messages:{
+                    adminName:{
+                        required:"请输入管理员名",
+                        maxlength:"管理员名太长！"
+                    },
+                    adminPwd:{
+                        required:"请输入密码",
+                        minlength: "密码太短！",
+                        //passwordCheck:true,
+
+                    },
+                    rePwd:{
+                        required:"请再次输入密码",
+                        minlength: "密码太短！",
+                        equalTo:"两次输入的密码不一致！"
+                    },
+
+                },
+
+                submitHandler:function(form) {
+                    form.submit();
+                },
+
+                success: function(label) {
+                    // set &nbsp; as text for IE
+                    label.html("&nbsp;").addClass("checked");
+                    label.addClass("checked").text("验证通过")
+                },
+
+                /*可以给未通过验证的元素加效果、闪烁等。*/
+                highlight: function(element/*非jQuery对象？*/, errorClass) {
+                    $(element).parent().find("." + errorClass).removeClass("checked");
+                }
+            })
+
+
+        })
+
+    </script>
+</head>
+<body>
+<div class="container">
+    <div id="wrapper">
+        <a th:href="@{/admin/adminManage}">返回列表</a>
+        <h3 class="py-3">新增管理员</h3>
+        <p id="errmsg" th:text="${errmsg}"></p>      <!--???-->
+        <form id="adminRegForm" th:action="@{/admin/createAdmin}" th:object="${admin}" method="post">
+            <div class="form-group">
+                <label >管理员名</label>
+                <input type="text" class="form-control form-control-sm" th:field="*{adminName}" >
+            </div>
+            <div class="form-group">
+                <label >管理员密码:</label>
+                <input type="password" class="form-control form-control-sm" th:field="*{adminPwd}" id="pwd">
+            </div>
+            <div class="form-group">
+                <label >再次输入密码:</label>
+                <input type="password" class="form-control form-control-sm" name="rePwd" >
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm"> 创建 </button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

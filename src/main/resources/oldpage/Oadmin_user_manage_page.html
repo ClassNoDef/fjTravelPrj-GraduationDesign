@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table>
+<tr>
+    <th>用户ID</th>
+    <th>用户名</th>
+    <th>性别</th>
+    <th>出生日期</th>
+    <th>手机号码</th>
+    <th>用户邮箱</th>
+    <th>用户签名</th>
+    <th>用户游记作品统计</th>
+    <th>用户指南作品统计</th>
+    <th>操作</th>
+</tr>
+    <!--@{}表达式：链接url表达式-->
+    <!--thymeleaf拼接动态路径变量链接方法
+    ：'固定文本的链接字符串'+${拼接的表达式}-->
+<tr th:each="user:${loadedUser}">
+    <td th:text="${user.userId}"></td>
+    <td th:text="${user.userName}"></td>
+    <td th:if="${user.userSex} eq 'M'">男</td>
+    <td th:if="${user.userSex} eq 'F'">女</td>
+    <td th:text="${#dates.format(user.userBirthday,'yyyy-MM-dd ')}"></td>
+    <td th:text="${user.userPhone}"></td>
+    <td th:text="${user.userEmail}"></td>
+    <td th:text="${user.userNote}"></td>
+    <td th:text="${user.noteCount}"></td>
+    <td th:text="${user.guideCount}"></td>
+    <td><a th:if="${user.userStatus eq 0}" th:href="@{'/admin/freezeUser/'+${user.userId}}"><button>冻结</button></a></td>
+    <td><a th:if="${user.userStatus eq 1}" th:href="@{'/admin/unFreezeUser/'+${user.userId}}"><button>解冻</button></a></td>
+</tr>
+    <a href="/admin/toCreateAdmin">返回后台</a>
+</table>
+
+</body>
+</html>

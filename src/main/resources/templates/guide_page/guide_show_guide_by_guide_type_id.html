@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link type="text/css" rel="stylesheet" href="/css/attracShowPage/core.css">
+    <link type="text/css" rel="stylesheet" href="/css/attracShowPage/home.css">
+    <link type="text/css" rel="stylesheet" href="/css/attracShowPage/icon.css">
+    <link rel="stylesheet" href="/libs/bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="/libs/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/js/Paged/guideSearchByTypePage.js"></script>
+    <script th:inline="javascript">
+        var t=[[${queryGuideType}]];
+        $(function () {
+           initR(t)
+        });
+    </script>
+</head>
+<body>
+<section>
+    <div class="ydc-content-slide ydc-body">
+        <div class="ydc-flex">
+            <!-- right begin -->
+            <div class="ydc-column ydc-column-8">
+                <div class="ydc-release-content">
+                    <div class="ydc-tabPanel ydc-tabPanel-release">
+                        <div class="ydc-release-tab-head">
+                            <ul>
+                                <li class="hit" id="mainTitle"></li>
+                            </ul>
+                        </div>
+                        <div class="ydc-panes">
+                            <div class="ydc-pane" style="display:block;">
+
+                                <div class="ydc-group-table" id="result">
+
+                                </div>
+                            </div>
+                            <div class="ydc-pagination" id="gspage">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- right end -->
+        </div>
+    </div>
+</section>
+</body>
+</html>

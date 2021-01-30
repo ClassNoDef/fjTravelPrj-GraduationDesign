@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.travel.fj.dao.WorkDao">
+    <insert id="createWork" parameterType="Work">
+        insert into tbl_works(work_title,work_author,work_type,work_attrac,work_text,work_pic_list)
+        values (#{workTitle},#{workAuthor.userId},#{workType.noteTypeId},#{workAttrac.attracId},#{workText},#{workPicList});
+    </insert>
+    <select id="loadCheckedWorks" resultMap="workData">
+        select * from tbl_works where work_status=1;
+    </select>
+
+    <select id="loadNoCheckWorks" resultMap="workData">
+        select * from tbl_works where work_status=0;
+    </select>
+
+    <select id="loadBlockedWorks" resultMap="workData">
+        select * from tbl_works where work_status=2;
+    </select>
+
+    <select id="loadQueryWorks" resultMap="workData">
+        select * from tbl_works
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="helper.queryWorkTitle != null">
+                work_title like concat('%',#{helper.queryWorkTitle},'%')
+            </if>
+            <if test="helper.queryWorkAuthorId != null">
+                AND work_author = #{helper.queryWorkAuthorId}
+            </if>
+            <if test="helper.queryWorkAttracId!= null">
+                AND work_attrac = #{helper.queryWorkAttracId}
+            </if>
+            <if test="helper.queryWorkType!= null">
+                AND work_type = #{helper.queryWorkType}
+            </if>
+            <if test="helper.queryWorkStatus!= null">
+                AND work_status = #{helper.queryWorkStatus}
+            </if>
+        </trim>
+    </select>
+
+    <select id="loadQueryAndPagedWorks" resultMap="workData">
+        select * from tbl_works
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="helper.queryWorkTitle != null">
+                work_title like concat('%',#{helper.queryWorkTitle},'%')
+            </if>
+            <if test="helper.queryWorkAuthorId != null">
+                AND work_author = #{helper.queryWorkAuthorId}
+            </if>
+            <if test="helper.queryWorkAttracId!= null">
+                AND work_attrac = #{helper.queryWorkAttracId}
+            </if>
+            <if test="helper.queryWorkType!= null">
+                AND work_type = #{helper.queryWorkType}
+            </if>
+            <if test="helper.queryWorkStatus!= null">
+                AND work_status = #{helper.queryWorkStatus}
+            </if>
+        </trim>
+        and work_status=1
+        order by work_id asc limit #{startIndex},#{fetchSize}
+    </select>
+
+    <select id="loadQueryAndPagedWorksAdmin" resultMap="workDataAdmin">
+        select * from tbl_works
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="helper.queryWorkTitle != null">
+                work_title like concat('%',#{helper.queryWorkTitle},'%')
+            </if>
+            <if test="helper.queryWorkAuthorId != null">
+                AND work_author = #{helper.queryWorkAuthorId}
+            </if>
+            <if test="helper.queryWorkAttracId!= null">
+                AND work_attrac = #{helper.queryWorkAttracId}
+            </if>
+            <if test="helper.queryWorkType!= null">
+                AND work_type = #{helper.queryWorkType}
+            </if>
+            <if test="helper.queryWorkStatus!= null">
+                AND work_status = #{helper.queryWorkStatus}
+            </if>
+        </trim>
+
+        order by work_id asc limit #{startIndex},#{fetchSize}
+    </select>
+
+    <select id="getQueryWorkCount" resultType="int">
+        select
+         count(*)
+         from tbl_works
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="helper.queryWorkTitle != null">
+                work_title like concat('%',#{helper.queryWorkTitle},'%')
+            </if>
+            <if test="helper.queryWorkAuthorId != null">
+                AND work_author = #{helper.queryWorkAuthorId}
+            </if>
+            <if test="helper.queryWorkAttracId!= null">
+                AND work_attrac = #{helper.queryWorkAttracId}
+            </if>
+            <if test="helper.queryWorkType!= null">
+                AND work_type = #{helper.queryWorkType}
+            </if>
+            <if test="helper.queryWorkStatus!= null">
+                AND work_status = #{helper.queryWorkStatus}
+            </if>
+        </trim>
+        and work_status=1
+    </select>
+
+    <select id="getQueryWorkCountAdmin" resultType="int">
+        select
+        count(*)
+        from tbl_works
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="helper.queryWorkTitle != null">
+                work_title like concat('%',#{helper.queryWorkTitle},'%')
+            </if>
+            <if test="helper.queryWorkAuthorId != null">
+                AND work_author = #{helper.queryWorkAuthorId}
+            </if>
+            <if test="helper.queryWorkAttracId!= null">
+                AND work_attrac = #{helper.queryWorkAttracId}
+            </if>
+            <if test="helper.queryWorkType!= null">
+                AND work_type = #{helper.queryWorkType}
+            </if>
+            <if test="helper.queryWorkStatus!= null">
+                AND work_status = #{helper.queryWorkStatus}
+            </if>
+        </trim>
+    </select>
+
+    <select id="getWorkById" parameterType="int" resultMap="workData">
+        select * from tbl_works where work_id=#{id} and work_status=1;
+    </select>
+
+    <select id="getWorkByIdAdmin" parameterType="int" resultMap="workData">
+        select * from tbl_works where work_id=#{id};
+    </select>
+
+    <select id="getWorkByUserId" parameterType="int" resultMap="workData">
+         select * from tbl_works where work_author=#{authorId};
+    </select>
+
+
+    <select id="getWorkByWorkTypeId" parameterType="int" resultMap="workData">
+         select * from tbl_works where work_type=#{typeId};
+    </select>
+
+    <select id="getWorkByAttracId" parameterType="int" resultMap="workData">
+        select * from tbl_works where work_attrac=#{attracId};
+    </select>
+
+    <select id="getWorkByAttracIdU" parameterType="int" resultMap="workData">
+        select * from tbl_works where work_attrac=#{attracId} and  work_status=1;
+    </select>
+
+    <select id="getRandomWork" resultMap="workData">
+        select *,RAND() as r from tbl_works order by r desc limit 4
+    </select>
+
+    <select id="getRandomWorkU" resultMap="workData">
+        select *,RAND() as r from tbl_works where work_status=1 order by r desc limit 4
+    </select>
+
+    <select id="getPopularWork" resultMap="workData">
+        select * from tbl_works order by work_like_count desc
+    </select>
+
+    <select id="getPopularWorkU" resultMap="workData">
+        select * from tbl_works where work_status=1 order by work_like_count desc
+    </select>
+
+    <select id="getWorkPicById" parameterType="int" resultType="string">
+        select work_pic_list from tbl_works
+        where work_id=#{id}
+    </select>
+
+    <update id="updateWork" parameterType="Work">
+        update tbl_works set work_title=#{workTitle},work_type=#{workType.noteTypeId},work_text=#{workText},work_pic_list=#{workPicList}
+        where work_id=#{workId};
+    </update>
+<!--0 待审核/1 审核通过 2删除,屏蔽-->
+    <update id="updateWorkStatus" parameterType="Work">
+        update tbl_works set work_status=#{workStatus}
+        where work_id=#{workId};
+    </update>
+
+    <update id="updateLikeCount" parameterType="Work">
+        update tbl_works set work_like_count=#{workLikeCount}
+        where work_id=#{workId};
+    </update>
+
+    <update id="blockFreezeUserWork" parameterType="int">
+        update tbl_works set work_status=2
+        where work_author=#{id} and work_status=1;
+    </update>
+
+    <update id="unBlockFreezeUserWork" parameterType="int">
+        update tbl_works set work_status=0
+        where work_author=#{id} and work_status=2;
+    </update>
+
+    <resultMap id="workData" type="Work">
+        <id column="work_id" property="workId"/>
+        <result column="work_title" property="workTitle"/>
+        <result column="work_create_time" property="workCreateTime"/>
+        <result column="work_text" property="workText"/>
+        <result column="work_status" property="workStatus"/>
+        <result column="work_pic_list" property="workPicList"/>
+        <association property="workAuthor" column="work_author" javaType="User" select="com.travel.fj.dao.UserDao.getUserById1"/>
+        <association property="workType" column="work_type" javaType="NoteType" select="com.travel.fj.dao.NoteTypeDao.getNoteTypeById"/>
+        <association property="workAttrac" column="work_attrac" javaType="Attraction" select="com.travel.fj.dao.AttractionDao.getAttractionById"/>
+    </resultMap>
+
+    <resultMap id="workDataAdmin" type="Work">
+        <id column="work_id" property="workId"/>
+        <result column="work_title" property="workTitle"/>
+        <result column="work_create_time" property="workCreateTime"/>
+        <result column="work_text" property="workText"/>
+        <result column="work_status" property="workStatus"/>
+        <result column="work_pic_list" property="workPicList"/>
+        <association property="workAuthor" column="work_author" javaType="User" select="com.travel.fj.dao.UserDao.getUserById1"/>
+        <association property="workType" column="work_type" javaType="NoteType" select="com.travel.fj.dao.NoteTypeDao.getNoteTypeById"/>
+        <association property="workAttrac" column="work_attrac" javaType="Attraction" select="com.travel.fj.dao.AttractionDao.getAttractionByIdIgnoreBlocked"/>
+    </resultMap>
+</mapper>

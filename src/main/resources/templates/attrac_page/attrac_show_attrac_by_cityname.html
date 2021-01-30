@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<link type="text/css" rel="stylesheet" href="/css/attracShowPage/core.css">
+	<link type="text/css" rel="stylesheet" href="/css/attracShowPage/home.css">
+	<link type="text/css" rel="stylesheet" href="/css/attracShowPage/icon.css">
+	<link rel="stylesheet" href="/libs/bootstrap/css/bootstrap.min.css">
+	<script type="text/javascript" src="/libs/jquery/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="/js/Paged/attracSearchByCityIdPage.js"></script>
+	<script th:inline="javascript">
+		var cityId=[[${queryCityId}]];
+
+		$(function () {
+			initR(cityId)
+		});
+
+
+
+	</script>
+</head>
+<body>
+
+
+
+<!-- content YDC begin -->
+	<section>
+		<div class="ydc-content-slide ydc-body">
+			<div class="ydc-flex">
+				<!-- right begin -->
+				<div class="ydc-column ydc-column-8">
+					<div class="ydc-release-content">
+						<h1 id="bigCityName"></h1>
+						<div class="ydc-tabPanel ydc-tabPanel-release">
+							<div class="ydc-release-tab-head">
+								<ul>
+									<li class="hit" id="tipsTitle">简介</li>
+								</ul>
+							</div>
+							<div class="ydc-group-table" id="tips">
+
+							</div>
+							<div class="ydc-release-tab-head">
+								<ul>
+									<li class="hit" id="mainTitle">景点列表</li>
+								</ul>
+							</div>
+
+							<div class="ydc-panes">
+								<div class="ydc-pane" style="display:block;">
+
+									<div class="ydc-group-table" id="result">
+
+									</div>
+								</div>
+								<div class="ydc-pagination" id="apage">
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- right end -->
+			</div>
+		</div>
+
+	</section>
+<!-- content YDC end -->
+
+
+<!--	<script type="text/javascript">
+	    var slideIndex = 0;
+	    showSlides();
+
+	    function showSlides() {
+	        var i;
+	        var slides = document.getElementsByClassName("mySlides");
+	        for (i = 0; i < slides.length; i++) {
+	            slides[i].style.display = "none";
+	        }
+	        slideIndex++;
+	        if (slideIndex> slides.length) {slideIndex = 1}
+	        slides[slideIndex-1].style.display = "block";
+	        setTimeout(showSlides, 3000); // 滚动时间
+	    }
+	</script>
+
+	<script type="text/javascript">
+	    $(function(){
+	        $('.ydc-tabPanel ul li').click(function(){
+	            $(this).addClass('hit').siblings().removeClass('hit');
+	            $('.ydc-panes>div:eq('+$(this).index()+')').show().siblings().hide();
+	        })
+	    })
+	</script>-->
+
+</body>
+</html>

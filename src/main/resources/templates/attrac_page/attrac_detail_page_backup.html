@@ -1,0 +1,257 @@
+﻿<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html PUBLIC "" ""><HTML lang="zh-lang">
+<HEAD>
+    <META content="IE=11.0000" http-equiv="X-UA-Compatible">
+    <META charset="UTF-8">
+    <TITLE th:text="${attracDetail.attracName}+'景点详情'"></TITLE>
+    <META name="keywords" content="">
+    <META name="renderer" content="webkit">
+    <META content="ecd61d885bfd9fd9" property="wb:webmaster">
+    <META content="22527703056624163757" property="qc:admins">
+    <META http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <LINK href="/css/attracDetailPage/styles.css" rel="stylesheet" type="text/css" media="all">
+    <link rel="stylesheet" type="text/css" href="/css/mainPage/style.css" />
+    <link rel="stylesheet" href="/libs/layui/css/layui.css" media="all">
+    <LINK href="/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <script type="text/javascript" src="/libs/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ow841m4gzewH0wt7GVszr40V5lxKDGPa">
+        //v2.0版本的引用方式：src="http://api.map.baidu.com/api?v=2.0&ak=您的密钥"
+    </script>
+    <script type="text/javascript">
+        $(function() {
+                // 导航
+                $(".nav>ul>li").mouseenter(function (event) {
+                    $(this).addClass("cur").siblings().removeClass("cur")
+                    $(this).children(".yincang").stop().slideDown()
+
+                });
+                $(".nav>ul>li").mouseleave(function (event) {
+                    $(this).removeClass("cur")
+                    $(this).children(".yincang").stop().slideUp()
+                });
+            })
+           </script>
+    <META name="GENERATOR" content="MSHTML 11.00.10570.1001"></HEAD>
+<BODY class="page-jingdian page-jingdian_detail">
+<div class="header1">
+    <div class="header1-in">
+        <div class="logo">
+            <a href="#"><img src="/img/logo.jpg" alt="说行就行，随行" /></a>
+        </div>
+        <div class="search">
+            <form th:action="@{/attrac/attracSearchQuery}" method="get">
+                <div class="search-left">
+                    <p>景点搜索</p>
+                </div>
+                <div class="search-center">
+                    <input type="text" name="keyword" class="tex1" placeholder="请输入景点名" />
+                </div>
+                <button class="search-right" type="submit" ></button>
+            </form>
+        </div>
+        </form>
+
+        <div class="zuce">
+
+
+            <div th:if="${session.logonUser}!=null" >
+                <img  th:src="@{'/user/getUserPic/'+${session.logonUser.userId}}" style="width: 60px;height: 60px;border-radius: 30px;">
+
+                <span  class="youhuitu-inl" th:text="'欢迎'+${session.logonUser.userName}"></span>
+                <a th:href="@{/user/logout}"><p >退出登录</p></a>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="nav">
+    <ul class="ul1">
+        <li class="level1 cur first"><a class="a1" href="/">首页</a></li>
+        <li class="level1"><a class="a1" href="#">&nbsp;&nbsp;||&nbsp;&nbsp;</a></li>
+        <li class="level1"><a  class="a1" href="">目的地</a>
+            <ul class="yincang" >
+                <li th:each="listcity:${application.city}">
+                    <a th:href="@{'/attrac/showAttracs/'+${listcity.cityName}}" th:text="${listcity.cityName}"></a>
+                </li>
+            </ul>
+        </li>
+        <li class="level1"><a class="a1" href="#">||</a></li>
+        <li class="level1">
+            <a class="a1" href="">分类</a>
+            <ul class="yincang" >
+
+                <li th:each="list:${application.attracTypeList}">
+                    <a th:href="@{'/attrac/showAttracsT/'+${list.attracTypeId}}" th:text="${list.attracTypeName}"></a>
+                </li>
+            </ul>
+        </li>
+        <li class="level1"><a class="a1" href="#">||</a></li>
+        <li class="level1">
+            <a class="a1"  th:if="${session.logonUser}==null" th:href="@{/user/login}">登录/注册</a>
+            <a class="a1" th:if="${session.logonUser}!=null" th:href="@{/user/userCenter}">个人中心</a>
+        </li>
+    </ul>
+</div>
+
+<DIV class="lt-main">
+
+    <DIV class="ltLeft">
+
+    <DIV class="mod-jingdianBox">
+
+    <DIV class="box">
+        <DIV class="title">
+            <p th:text="${attracDetail.attracName}">太姥山</p>
+        </DIV>
+    </DIV>
+
+<DIV class="detail">
+<UL>
+  <LI><SPAN>所在地区：</SPAN>
+  <DIV th:text="${attracDetail.attracCity.cityName}">福州</DIV>
+  </LI>
+  <LI><SPAN>详细地址：</SPAN>				 
+  <DIV th:text="${attracDetail.attracAdd}">宁德市福鼎市秦屿镇九七五县道太姥山</DIV></LI>
+  <LI><SPAN>景点类型：</SPAN>
+  <DIV th:text="${attracDetail.attracType.attracTypeName}">0593-7288002</DIV></LI>
+  <LI><SPAN>游记总数：</SPAN>
+  <DIV th:text="${attracDetail.attracNoteCount}">8:00-17:00</DIV></LI>
+  <LI><SPAN>指南总数：</SPAN>
+  <DIV th:text="${attracDetail.attracGuideCount}">1-2天</DIV></LI>
+    <LI><SPAN>总浏览量：</SPAN>
+        <DIV th:text="${attracDetail.attracClickCount}">1-2天</DIV></LI>
+  <LI><SPAN>最佳季节：</SPAN>				 
+  <DIV>四季皆宜&nbsp;</DIV>
+
+  </LI>
+    <LI>
+
+
+    </LI>
+</UL>
+</DIV>
+    </DIV>
+        <button class="mod-jingdianBox" style="background: green ;border-color: green;height: 50px" >
+            <a style="font-size: 15px;font-family: 'Microsoft YaHei UI';color: white" th:if="${session.logonUser}==null" th:href="@{/user/login}" th:text="'想要分享自己的旅游经历？请先登录！'">
+            </a>
+            <a style="font-size: 15px;font-family: 'Microsoft YaHei UI';color: white" th:if="${session.logonUser}!=null" th:href="@{'/work/createWork/'+${attracDetail.attracId}}" th:text="'创建属于自己的游记'">
+            </a>
+        </button>
+<DIV class="mod-sidebar-spot">
+<DIV class="title">附近景点</DIV>
+<DIV class="content">
+<UL>
+    <th:block th:each="ot:${otherAttrac}">
+  <LI th:if="${ot.attracId} != ${attracDetail.attracId}">
+  <DIV class="img">
+      <A th:href="@{'/attrac/attracDetail/'+${ot.attracId}}">
+          <IMG width="99" height="66" title="嵛山岛" align="top" alt="嵛山岛" th:src="@{'/attrac/getAttracSinglePic/'+${ot.attracId}}">
+      </A>
+  </DIV>
+  <P>
+      <A th:href="@{'/attrac/attracDetail/'+${ot.attracId}}" th:text="${ot.attracName}">嵛山岛</A>
+  </P>
+  </LI>
+    </th:block>
+  </UL>
+</DIV>
+</DIV>
+        <DIV class="mod-sidebar-spot">
+            <DIV class="title">天气</DIV>
+            <DIV class="content">
+
+
+            </DIV>
+        </DIV>
+        <DIV class="mod-sidebar-spot">
+            <DIV class="title">地图</DIV>
+            <DIV class="content" id="container" style="width: 250px;height: 250px">
+
+
+            </DIV>
+        </DIV>
+        <script th:inline="javascript">
+            var place=[[${attracDetail.attracName}]];
+            var map = new BMap.Map("container");
+            // 创建地图实例
+            map.centerAndZoom(new BMap.Point(117.805, 24.436), 15);
+            var local = new BMap.LocalSearch(map, {
+                renderOptions:{map: map}
+            });
+            local.search(place);;
+        </script>
+    </DIV>
+<DIV class="ltRight">
+<DIV class="detail">
+<DIV class="left">
+    <IMG width="900" height="400" align="left" th:src="@{'/attrac/getAttracSinglePic/'+${attracDetail.attracId}}">
+</DIV>
+<DIV class="right">
+<DIV class="map" id="j-allmap"></DIV>
+</DIV></DIV>
+<DIV class="mod-products ticket"><!--门票预订--></DIV>
+    <DIV class="mod-products"><!--游记-->
+        <DIV class="title"><I class="icon-title-a6"></I>
+            <SPAN class="title-span1">简介</SPAN>
+        </DIV>
+        <DIV class="content" th:text="${attracDetail.attracTips}">
+
+        </DIV>
+    </DIV>
+<DIV class="mod-products"><!--游记-->				 
+<DIV class="title"><I class="icon-title-a6"></I>
+    <SPAN class="title-span0">游记</SPAN>
+</DIV>
+<DIV class="content">
+<UL class="productUl1">
+    <th:block th:each="w:${linkWork}">
+  <LI>
+  <DIV class="img">
+      <a th:href="@{'/work/workDetail/'+${w.workId}}" >
+          <IMG width="290" height="194" align="top" th:src="@{'/work/getWorkSinglePic/'+${w.workId}}">
+      </a>
+      <I class="icon-line-tip1">游记</I>
+  </DIV>
+  <DIV class="text">
+      <h3  class="footText" th:href="@{'/work/workDetail/'+${w.workId}}" th:text="${w.workTitle}">福建 福鼎</h3><br>
+      <span th:text="'作者：'+${w.workAuthor.userName }"></span><br>
+      <span th:text="'发表时间：'+${#dates.format(w.workCreateTime,'yyyy-MM-dd ')}"></span><br>
+      <span th:text="'描述景点：'+${w.workAttrac.attracName }"></span><br>
+      <span th:text="' 类型：'+${w.workType.noteTypeName}"></span><br>
+  </DIV>
+  </LI>
+    </th:block>
+  </UL>
+</DIV>
+</DIV>
+<DIV class="mod-products"><!--美食特产-->				 
+<DIV class="title"><I class="icon-title-a2"></I>
+    <SPAN class="title-span2">指南</span>
+</DIV>
+<DIV class="content">
+<UL class="productUl1">
+    <th:block th:each="g:${linkGuide}">
+        <LI>
+            <DIV class="img">
+                <a th:href="@{'/guide/guideDetail/'+${g.guideId}}" >
+                    <IMG width="290" height="194" align="top" th:src="@{'/guide/getGuideSinglePic/'+${g.guideId}}">
+                </a>
+                <I class="icon-line-tip1">指南</I>
+            </DIV>
+            <DIV class="text">
+                <h3  class="footText" th:href="@{'/guide/guideDetail/'+${g.guideId}}" th:text="${g.guideTitle}">福建 福鼎</h3><br>
+                <span th:text="'发表时间：'+${#dates.format(g.guideCreateTime,'yyyy-MM-dd ')}"></span><br>
+                <span th:text="'描述景点：'+${g.guideAttrac.attracName }"></span><br>
+                <span th:text="' 类型：'+${g.guideType.guideTypeName}"></span><br>
+            </DIV>
+        </LI>
+    </th:block>
+</UL>
+</DIV>
+</DIV>
+</DIV>
+</DIV>
+
+ </BODY></HTML>

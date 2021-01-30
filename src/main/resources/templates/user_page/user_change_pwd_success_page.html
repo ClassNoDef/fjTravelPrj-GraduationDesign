@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>密码更改</title>
+    <link rel="stylesheet" href="/libs/layui/css/layui.css" media="all">
+    <script src="/libs/layui/layui.js"></script>
+    <script type="text/javascript">
+        layui.use('layer', function(){
+            var layer = layui.layer;
+            layer.confirm('您已成功更改用户密码！请重新登录', {
+                    btn: ['登录'] ,//按钮
+                closeBtn:0
+                }, function(){
+                    window.top.location.href='/user/login'
+                }
+            );
+        });
+
+
+
+    </script>
+</head>
+<body>
+</body>
+</html>

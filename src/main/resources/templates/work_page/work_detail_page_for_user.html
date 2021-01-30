@@ -1,0 +1,77 @@
+﻿<!DOCTYPE HTML>
+<HTML lang="zh-lang" xmlns:th="http://www.thymeleaf.org">
+<HEAD>
+	 
+<META charset="UTF-8">
+	<TITLE></TITLE>
+	<LINK href="/css/attracDetailPage/styles.css" rel="stylesheet" type="text/css" media="all"> <LINK href="/favicon.ico" rel="shortcut icon" type="image/x-icon">
+	<link rel="stylesheet" type="text/css" href="/css/mainPage/style.css" />
+	<script type="text/javascript" src="/libs/jquery/jquery-3.3.1.min.js"></script>
+	<script th:inline="javascript">
+		$(function () {
+			$("#text").html([[${workDetail.workText}]])
+			$.ajax({
+						url: "/work/getWorkPic/[[${workDetail.workId}]]",
+						type: "get",
+						data: null,
+						success: function (data) {
+							console.log(data)
+							var singlePic=data.data.split("###")
+							console.log(singlePic.length)
+							for (var i = 0; i < singlePic.length; i++) {
+								$("#workPic").append
+								("<img id='pic'  src='data:image/png;base64," + singlePic[i] + "'/>");
+
+							}
+						}
+					}
+			)
+
+
+
+		})
+	</script>
+<style type="text/css">
+	#pic{
+		width: 871px;
+		height: 320px;
+	}
+</style>
+
+ 
+<META name="GENERATOR" content="MSHTML 11.00.10570.1001"></HEAD> 
+<BODY class="page-travels_lists page-travels_detail">
+
+<a th:href="@{/work/myWork}">返回我的作品列表</a>
+<DIV class="lt-main"><!-- your code start -->				 
+<DIV class="lt-left">
+<DIV class="line-h"></DIV>
+<DIV class="userWrap">
+<DIV class="img">
+	<IMG alt="" th:src="@{'/user/getUserPic/'+${workDetail.workAuthor.userId}}">
+</DIV>
+<DIV class="hidden">
+	<H3 th:text="${workDetail.workTitle}">	</H3>
+	<H4 th:text="${workDetail.workType.noteTypeName}+' |描述景点：'+${workDetail.workAttrac.attracName}"></H4>
+	<h4 th:text="'发表于：'+${#dates.format(workDetail.workCreateTime,'yyyy-MM-dd HH:mm:ss ')}"></h4>
+	<h4 th:text="'作者：'+${workDetail.workAuthor.userName}"></h4>
+	<h4 th:text="'点赞数：'+${workDetail.workLikeCount}"></h4>
+</DIV>
+</DIV>
+<DIV class="line-h"></DIV>
+<DIV class="content">
+
+	<p id="text"> </p>
+	<div id="workPic" >
+
+	</div>
+
+
+</DIV>
+			 
+</DIV>
+
+</DIV>
+
+ </BODY>
+</HTML>

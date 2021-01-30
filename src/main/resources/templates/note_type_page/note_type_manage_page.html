@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/css/adminCenter/amazeui.min.css" />
+    <link rel="stylesheet" href="/css/adminCenter/admin.css" />
+    <link rel="stylesheet" href="">
+</head>
+<style type="text/css">
+    #errmsg{
+        color: red;
+    }
+</style>
+<script src="/js/adminCenter/mods/index.js"></script>
+<script src="/libs/jquery/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    function deleteNoteType(notTypeId,noteTypeName) {
+        var c=confirm("您真的要删除游记类型："+noteTypeName+" 吗？");
+        if(c==true) {
+            $.ajax({
+                    url: "/noteTypeMgr/deleteNoteType/" + notTypeId,
+                    type: "get",
+                    //data: null,
+                    //async:false,
+                    success: function (data) {
+
+                        if (data.meta.success == false) {
+                            console.log(data.meta.success);
+                            $("#errmsg").text(data.meta.message);
+                        } else {
+                            location.reload();
+                        }
+                    }
+                }
+            );
+        }
+        else ;
+    }
+
+    $(function () {
+        $.ajax({
+            url: "/noteTypeMgr/loadAllNoteTypeAjax",
+            type: "post",
+            data: null,
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var str = ""
+                    str += "<tr>"+
+                        "<td>"+data[i].noteTypeId+"</td>" +
+                        "<td>"+data[i].noteTypeName+"</td>" +
+                        "<td>"+data[i].noteCount+"</td>" +
+                        "<td><a href='/noteTypeMgr/updateNoteType/" + data[i].noteTypeId + "' class='am-btn am-btn-default am-btn-xs am-text-secondary' >更新</a></td>" +
+                        "<td><a onclick='deleteNoteType(" + data[i].noteTypeId + ",\"" + data[i].noteTypeName + "\")'  class='am-btn am-btn-default am-btn-xs am-text-secondary'>删除</a></td>"+
+                        "</tr>";
+                    $("#nList").append(str)
+                }
+            }
+        })
+    })
+</script>
+
+
+<body>
+<div class="admin-content-body">
+    <div class="am-cf am-padding am-padding-bottom-0">
+        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">游记类型管理</strong><small></small></div>
+    </div>
+
+    <hr>
+
+    <div class="am-g">
+        <div class="am-u-sm-12 am-u-md-6">
+            <div class="am-btn-toolbar">
+                <div class="am-btn-group am-btn-group-xs">
+                    <a href="/noteTypeMgr/createNoteType" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</a>
+                </div>
+            </div>
+        </div>
+        <div class="am-u-sm-12 am-u-md-3">
+
+        </div>
+        <div class="am-u-sm-12 am-u-md-3">
+
+        </div>
+    </div>
+    <div class="am-g">
+        <div class="am-u-sm-12">
+            <p id="errmsg"></p>
+            <form class="am-form">
+                <table class="am-table am-table-striped am-table-hover table-main">
+                    <thead>
+                    <tr>
+                        <th class="table-id">类型ID</th>
+                        <th class="table-type">类型名</th>
+                        <th class="table-type">景点计数</th>
+                        <th class="table-type"></th>
+                        <th class="table-set">操作</th>
+                        <th class="table-type"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="nList">
+                    </tbody>
+                </table>
+
+                <hr>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

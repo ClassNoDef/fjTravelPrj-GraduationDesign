@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <style>
+        #errmsg{
+            color:red;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                    url: "/attracMgr/getAttracType",
+                    type: "get",
+                    data: null,
+                    //async:false,
+                    success: function (data) {
+                        console.log(data)
+                        //$("#attracttype").prepend("<option value='0'>请选择</option>");
+                        for (var i = 0; i < data.data.length; i++) {
+
+                            $("#attracttype").append
+                            ("<option value='" + data.data[i].attracTypeId + "'>" + data.data[i].attracTypeName + "</option>");
+                        }
+                    }
+                }
+            );
+
+
+            $.ajax({
+                    url: "/attracMgr/getCity",
+                    type: "get",
+                    data: null,
+                    //async:false,
+                    success: function (data) {
+                        console.log(data)
+                        //$("#city").prepend("<option value='0'>请选择</option>");
+                        for (var i = 0; i < data.data.length; i++) {
+
+                            $("#city").append
+                            ("<option value='" + data.data[i].cityId + "'>" + data.data[i].cityName+'/'+data.data[i].cityEngName + "</option>");
+                        }
+                    }
+                }
+            );
+        });
+        function previewImg(){
+            var extCheck=true;
+            //每次切换前，把之前的预览图片清空
+            document.getElementById("previewImg").innerHTML="";
+
+            //开始遍历图
+            var img=document.getElementById("attracPic").files;
+            if(img.length>5){
+                alert("最多五张图！")
+                var f=document.getElementById("attracPic");
+                f.value=''
+            }
+            for(var i=0;i<img.length;i++){
+                var name=img[i].name
+                var idx=name.lastIndexOf(".")
+                if(idx!=-1){
+                    var ext=name.substring(idx+1,name.length).toLowerCase()
+                }
+                console.log(ext)
+                if(ext==="jpg"||ext==="png"||ext==="jpeg");
+                else{extCheck=false}
+                console.log(extCheck)
+            }
+
+            if(extCheck==false){
+                alert("上传的图片中有不支持的格式")
+                var f=document.getElementById("attracPic");
+                f.value=''
+            }
+            for(var i=0;i<img.length;i++){
+                var file=img[i];
+                var url=URL.createObjectURL(file);
+                var box=document.createElement("img");
+                box.setAttribute("src",url);
+                box.className='previewImg';
+                box.setAttribute("width",100+'px');
+                box.setAttribute("heigh",100+'px');
+                //append到页面上
+                var body=document.getElementsByClassName("previewImg")[0];
+                body.appendChild(box);
+            }
+        }
+
+
+    </script>
+    <style>
+        .previewImg{
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="wrapper">
+        <a th:href="@{/attracMgr/loadAllAttractions}"> <button type="submit" class="btn btn-primary btn-sm"> 返回列表 </button></a>
+        <h3 class="py-3">新建景点</h3>
+        <p id="errmsg" th:text="${errmsg}"></p>      <!--???-->
+        <form action="#" th:action="@{/attracMgr/createAttrac}" th:object="${newAttrac}" method="post"  enctype="multipart/form-data">
+            <div class="form-group">
+                <label >景点名</label>
+                <input type="text" class="form-control form-control-sm" th:field="*{attracName}" >
+            </div>
+            <div class="form-group">
+                <label >景点所在地</label>
+                <select id="city" class="form-control" name="city">
+                    <!-- <option value='0'>请选择</option>-->
+                 </select>
+             </div>
+             <div class="form-group">
+                 <label >具体地址</label>
+                 <input type="text" class="form-control form-control-sm"  th:field="*{attracAdd}" >
+             </div>
+             <div class="form-group">
+                 <label >景点类型</label>
+                 <select id="attracttype" class="form-control" name="type">
+                     <!--<option value='0'>请选择</option>-->
+                </select>
+            </div>
+            <div class="form-group">
+                <label >景点配图(仅支持.jpg/.jpeg/.png格式图片)</label>
+                <input type="file" class="form-control-file" id="attracPic" name="attracpic" multiple="multiple" onchange="previewImg(this)">
+                <div id="previewImg" class="previewImg">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>景点备注</label>
+                <textarea class="form-control" rows="3" th:field="*{attracTips}"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">创建景点 </button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

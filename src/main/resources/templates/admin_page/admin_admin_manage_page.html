@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/css/adminCenter/amazeui.min.css" />
+    <link rel="stylesheet" href="/css/adminCenter/admin.css" />
+    <link rel="stylesheet" href="">
+</head>
+<script src="/js/adminCenter/mods/index.js"></script>
+<script type="text/javascript">
+    function freezeAdmin(id) {
+        location.href="/admin/freezeAdmin/"+id;
+    }
+    function unfreezeAdmin(id) {
+        location.href="/admin/unFreezeAdmin/"+id;
+    }
+</script>
+<body>
+<div class="admin-content-body">
+    <div class="am-cf am-padding am-padding-bottom-0">
+        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">管理员管理</strong><small></small></div>
+    </div>
+
+    <hr>
+
+    <div class="am-g">
+        <div class="am-u-sm-12 am-u-md-6">
+            <div class="am-btn-toolbar">
+                <div class="am-btn-group am-btn-group-xs">
+                    <a href="/admin/createAdmin" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</a>
+                </div>
+            </div>
+        </div>
+        <div class="am-u-sm-12 am-u-md-3">
+
+        </div>
+        <div class="am-u-sm-12 am-u-md-3">
+
+        </div>
+    </div>
+    <div class="am-g">
+        <div class="am-u-sm-12">
+            <form class="am-form">
+                <table class="am-table am-table-striped am-table-hover table-main">
+                    <thead>
+                    <tr>
+                        <th class="table-id">管理员ID</th>
+                        <th class="table-type">管理员名</th>
+                        <th class="table-type">超级管理员</th>
+                        <th class="table-type">管理员状态</th>
+                        <th class="table-set">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                    <tr th:each="admin:${loadedAdmin}">
+                        <td th:text="${admin.adminId}"></td>
+                        <td th:text="${admin.adminName}"></td>
+                        <td th:if="${admin.isSuper eq 1}">是</td>
+                        <td th:if="${admin.isSuper eq 0}">否</td>
+                        <td th:if="${admin.adminStatus eq 0} ">正常</td>
+                        <td th:if="${admin.adminStatus eq 1} ">冻结</td>
+                        <td>
+                            <div class="am-btn-toolbar">
+                                <div class="am-btn-group am-btn-group-xs">
+                        <a th:if="${admin.adminStatus eq 0 && ((admin.adminName!='Admin')&&(admin.adminName!='System'))}" th:href="@{'/admin/freezeAdmin/'+${admin.adminId}}" class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only">冻结</a>
+                        <a th:if="${admin.adminStatus eq 1 && ((admin.adminName!='Admin')&&(admin.adminName!='System'))}" th:href="@{'/admin/unFreezeAdmin/'+${admin.adminId}}" class="am-btn am-btn-default am-btn-xs am-text-secondary">解冻</a>
+
+                                </div>
+                            </div>
+                        </td>
+    </tr>
+    </tbody>
+    </table>
+    <hr>
+    </form>
+</div>
+</div>
+</div>
+</body>
+</html>

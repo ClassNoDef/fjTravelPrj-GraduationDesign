@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>景点ID</th>
+        <th>景点名</th>
+        <th>景点所在城市</th>
+        <th>景点游记数</th>
+        <th>景点指南数</th>
+        <th>景点类型</th>
+        <th>操作</th>
+    </tr>
+    <!--@{}表达式：链接url表达式-->
+    <!--thymeleaf拼接动态路径变量链接方法
+    ：'固定文本的链接字符串'+${拼接的表达式}-->
+    <tr th:each="attrac:${attractionList}">
+        <td th:text="${attrac.attracId}"></td>
+        <td th:text="${attrac.attracName}"></td>
+        <td th:text="${attrac.attracCity.cityName}"></td>
+        <td th:text="${attrac.attracNoteCount}"></td>
+        <td th:text="${attrac.attracGuideCount}"></td>
+        <td th:text="${attrac.attracType.attracTypeName}"></td>
+        <td><a th:href="@{'/attracMgr/attractionDetail/'+${attrac.attracId}}"><button>详细信息</button></a></td>
+        <td><a href="#"><button>更新景点信息</button></a></td>
+        <td><a href="#"><button>删除景点</button></a></td>
+        <!--<td><a th:if="${admin.adminStatus eq 1 && ((admin.adminName!='Admin')&&(admin.adminName!='System'))}" th:href="@{'/admin/unFreezeAdmin/'+${admin.adminId}}"><button>解冻</button></a></td>-->
+
+    </tr>
+    <a href="/admin/adminCenter">返回后台</a>
+</table>
+</body>
+</html>

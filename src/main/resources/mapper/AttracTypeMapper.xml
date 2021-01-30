@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.travel.fj.dao.AttractionTypeDao">
+    <insert id="createAttracType" parameterType="AttractionType">
+        insert into tbl_attrac_type(attrac_type_name) values (#{attracTypeName})
+    </insert>
+    <select id="loadAllAttracType" resultType="AttractionType" >
+        select * from tbl_attrac_type
+    </select>
+    <select id="getAttracTypeById" parameterType="int" resultType="AttractionType">
+        select * from tbl_attrac_type where attrac_type_id=#{id}
+    </select>
+    <update id="updateAttracType" parameterType="AttractionType">
+        update tbl_attrac_type
+        set attrac_type_name=#{attracTypeName}
+        where attrac_type_id=#{attracTypeId}
+    </update>
+    <update id="updateAttracCountData" parameterType="AttractionType">
+        update tbl_attrac_type
+        set attrac_count=#{attracCount}
+        where attrac_type_id=#{attracTypeId}
+    </update>
+    <delete id="deleteAttracType" parameterType="int">
+        delete from tbl_attrac_type where attrac_type_id=#{id}
+    </delete>
+</mapper>

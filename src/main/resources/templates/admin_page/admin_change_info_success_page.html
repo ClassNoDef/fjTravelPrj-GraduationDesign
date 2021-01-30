@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登出成功</title>
+    <link rel="stylesheet" href="/libs/layui/css/layui.css" media="all">
+    <script src="/libs/layui/layui.js"></script>
+    <script type="text/javascript">
+        layui.use('layer', function(){
+            var layer = layui.layer;
+            layer.confirm('您已成功更改管理员信息!', {
+                    btn: ['返回后台首页'] //按钮
+                }, function(){
+                   location.href='/admin/index'
+                }
+            );
+        });
+    </script>
+</head>
+<body>
+</body>
+</html>

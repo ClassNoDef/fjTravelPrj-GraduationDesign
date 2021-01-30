@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>错误</title>
+    <link rel="stylesheet" href="/libs/layui/css/layui.css" media="all">
+    <script src="/libs/layui/layui.js"></script>
+    <script type="text/javascript">
+        layui.use('layer', function(){
+            var layer = layui.layer;
+            layer.confirm('链接已失效，请重新操作', {
+                    btn: ['返回首页'] ,//按钮
+                closeBtn:0
+                }, function(){
+                   location.href="/"
+                }
+            );
+        });
+
+
+
+    </script>
+</head>
+<body>
+</body>
+</html>

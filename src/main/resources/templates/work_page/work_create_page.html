@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <script th:src="@{/libs/ckeditor/ckeditor.js}" ></script>
+    <style>
+        #errmsg{
+            color:red;
+        }
+    </style>
+    <script th:inline="javascript">
+
+
+        $(function () {
+
+            $("#workPic").change(function () {
+                previewImg()
+            })
+            $.ajax({
+                    url: "/work/getNoteType",
+                    type: "get",
+                    data: null,
+                    //async:false,
+                    success: function (data) {
+                        console.log(data)
+                        for (var i = 0; i < data.data.length; i++) {
+
+                            $("#notetype").append
+                            ("<option value='" + data.data[i].noteTypeId + "'>" + data.data[i].noteTypeName + "</option>");
+                        }
+                    }
+                }
+            );
+            $("#attracCard").append
+            ("<img class='card-img-top'" +
+                "id='pic' src='/attrac/getAttracSinglePic/[[${newWork.workAttrac.attracId}]]''/>");
+            $("#attracCard").append("<h5 class='card-title' >" + [[${newWork.workAttrac.attracName}]] + "</h5>")
+            $("#attracCard").append("<p class='card-text')>" + [[${newWork.workAttrac.attracCity.cityName}]] + "</p>")
+            $("#attracCard").append("<p class='card-text')>" + [[${newWork.workAttrac.attracAdd}]] + "</p>")
+            $("#attracCard").append("<a href='/attrac/attracDetail/[[${newWork.workAttrac.attracId}]]' class='btn btn-primary'>查看景点详情</a>")
+        })
+
+
+            function previewImg(){
+            var extCheck=true;
+            //每次切换前，把之前的预览图片清空
+            document.getElementById("previewImg").innerHTML="";
+
+            //开始遍历图
+            var img=document.getElementById("workPic").files;
+            if(img.length>5){
+                alert("最多五张图！")
+                var f=document.getElementById("workPic");
+                f.value=''
+            }
+            for(var i=0;i<img.length;i++){
+                var name=img[i].name
+                var idx=name.lastIndexOf(".")
+                if(idx!=-1){
+                    var ext=name.substring(idx+1,name.length).toLowerCase()
+                }
+                console.log(ext)
+                if(ext==="jpg"||ext==="png"||ext==="jpeg");
+                else{extCheck=false}
+                console.log(extCheck)
+            }
+
+            if(extCheck==false){
+                alert("上传的图片中有不支持的格式")
+                var f=document.getElementById("workPic");
+                f.value=''
+            }
+            for(var i=0;i<img.length;i++){
+                var file=img[i];
+                var url=URL.createObjectURL(file);
+                var box=document.createElement("img");
+                box.setAttribute("src",url);
+                //box.className='previewImg';
+                box.setAttribute("width",250+'px');
+                box.setAttribute("heigh",250+'px');
+                //append到页面上
+                var body=document.getElementsByClassName("previewImg")[0];
+                body.appendChild(box);
+            }
+        }
+ </script>
+</head>
+<body>
+<div class="container">
+    <div id="wrapper">
+        <h3 class="py-3">新建游记</h3>
+        <p id="errmsg" th:text="${errmsg}"></p>      <!--???-->
+        <form action="#" th:action="@{/work/createWork}" th:object="${newWork}" method="post"  enctype="multipart/form-data">
+            <div class="form-group">
+                <label >标题</label>
+                <input type="text" class="form-control form-control-sm" th:field="*{workTitle}" >
+            </div>
+            <div class="card" id="attracCard" style="width: 18rem;">
+                <input type="hidden" th:field="*{workAttrac.attracId}">
+                <div class="card-body">
+
+                </div>
+            </div>
+            <div class="form-group">
+                <label >游记类型</label>
+                <select id="notetype" class="form-control" name="noteType">
+                </select>
+            </div>
+            <textarea th:field="*{workText}" id="workText" rows="10" cols="80">
+                请在此书写游记正文
+            </textarea>
+
+            <div id="previewImg" class="previewImg">
+
+            </div>
+            <input type="file" id="workPic" name="workPic" multiple="multiple" class="form-control-file">
+            <script>
+                CKEDITOR.replace( 'workText' );
+            </script>
+            <button type="submit" class="btn btn-primary btn-sm"> 创建 </button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

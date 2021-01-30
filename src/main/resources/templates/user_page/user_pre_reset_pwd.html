@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <script th:src="@{/libs/ckeditor/ckeditor.js}" ></script>
+    <script th:src="@{/libs/jquery-validation/jquery.validate.min.js}" ></script>
+    <script th:src="@{/libs/jquery-validation/messages_zh.min.js}" ></script>
+    <script th:src="@{/libs/laydate/laydate.js}" ></script>
+    <script type="text/javascript">
+        $(function () {
+
+
+                //点击更换验证码
+                $("img").click(function () {
+                    this.src="/user/vericode?"+Math.random();
+                });
+
+            $("#reSetPwdForm").validate({
+                rules: {
+                    userEmail: {
+                        required: true,
+                        email: true,
+                        remote: {
+                            url: "/user/findUserByEmail",
+                            type: "post",
+                            dataType: "json",
+                            data: {
+                                uemail: function () {
+                                    var e = $("#email").val();
+                                    return e
+                                }
+                            }
+                        },
+                    },
+                    vericode: {
+                        required: true,
+                        remote: {
+                            url: "/user/vericodeCheckJQ",
+                            type: "post",
+                            dataType: "json",
+                            data: {
+                                subVeriCode: function () {
+                                    var v = $("#veriCode").val();
+                                    return v
+                                }
+                            }
+                        },
+                    },
+                },
+
+                    messages: {
+                        userEmail: {
+                            required: "请输入邮箱",
+                            email: "输入邮箱不合法！",
+                            remote: "此邮箱未注册本网站",
+                        },
+
+                        vericode: {
+                            required: "请输入验证码",
+                            remote: "验证码错误",
+                        },
+                    },
+
+                    submitHandler: function (form) {
+                        form.submit();
+                    },
+
+                    success: function (label) {
+                        // set &nbsp; as text for IE
+                        label.html("&nbsp;").addClass("checked");
+                        label.addClass("checked").text("验证通过")
+                    },
+
+
+                    /*可以给未通过验证的元素加效果、闪烁等。*/
+                    highlight: function (element/*非jQuery对象？*/, errorClass) {
+                        $(element).parent().find("." + errorClass).removeClass("checked");
+                    }
+                }
+            )
+        })
+
+    </script>
+<style>
+    input.error { border: 1px solid red; }
+    label.error {
+
+    margin-top: 2px;
+    background:url("../../img/validation/unchecked.gif") no-repeat 5px center;
+
+    padding-left: 25px;
+
+
+    font-weight: bold;
+
+    color: #EA5200;
+    }
+    label.checked {
+
+    margin-top: 2px;
+    background:url("../../img/validation/checked.gif") no-repeat 5px center;
+
+    padding-left: 25px;
+
+
+    font-weight: bold;
+
+    color: blue;
+    }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="wrapper">
+        <h3 class="py-3">密码重置</h3>
+
+        <form id="reSetPwdForm" th:action="@{/user/checkUser}"  method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label >注册邮箱</label>
+                <input  type="email" class="form-control form-control-sm" name="userEmail" id="email"  >
+            </div>
+            <div class="form-group">
+                <label >验证码</label>
+                <img src="/user/vericode">
+                <input  type="text" class="form-control form-control-sm" name="vericode" id="veriCode"  >
+            </div>
+            <p>请输入注册时填写的邮箱，我们将向您发送一封包含重置密码链接的邮件</p>
+            <button type="submit" class="btn btn-primary btn-sm"> 重置密码 </button>
+        </form>
+        </div>
+</div>
+</body>
+</html>

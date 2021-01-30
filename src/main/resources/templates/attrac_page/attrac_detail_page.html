@@ -1,0 +1,375 @@
+﻿<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<HTML lang="zh-lang">
+<HEAD>
+    <META charset="UTF-8">
+    <TITLE th:text="${attracDetail.attracName}+'景点详情'"></TITLE>
+    <LINK href="/css/attracDetailPage/styles.css" rel="stylesheet" type="text/css" media="all">
+    <link rel="stylesheet" type="text/css" href="/css/mainPage/style.css" />
+    <link rel="stylesheet" href="/libs/layui/css/layui.css" media="all">
+    <LINK href="/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <script type="text/javascript" src="/libs/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/getscript?v=2.0&ak=ow841m4gzewH0wt7GVszr40V5lxKDGPa">
+        //v2.0版本的引用方式：src="http://api.map.baidu.com/api?v=2.0&ak=您的密钥"
+    </script>
+    <script type="text/javascript">
+        $(function() {
+                // 导航
+                $(".nav>ul>li").mouseenter(function (event) {
+                    $(this).addClass("cur").siblings().removeClass("cur")
+                    $(this).children(".yincang").stop().slideDown()
+
+                });
+                $(".nav>ul>li").mouseleave(function (event) {
+                    $(this).removeClass("cur")
+                    $(this).children(".yincang").stop().slideUp()
+                });
+
+            $("#searchOption").find("option[value='A']").attr("selected",true)
+            $("#sForm").attr("action","/attrac/showAttracs");
+            $("#searchOption").change(function () {
+                var se=$("#searchOption").val()
+                if(se==='A'){
+                    $("#sForm").attr("action","/attrac/showAttracs");
+                }
+                if(se==='W'){
+                    $("#sForm").attr("action","/work/showWork");
+                }
+                if(se==='G'){
+                    $("#sForm").attr("action","/guide/showGuide");
+                }
+            })
+            })
+
+       // var detailAdd=[[${attracDetail.attracAdd}]]
+
+
+
+        $.ajax({
+                url: "https://restapi.amap.com/v3/geocode/geo?key=6e8391e2f0b8b47d9f8ea836e3b00d34&address=[[${attracDetail.attracAdd}]]",
+                type: "get",
+                data: null,
+                success: function (data) {
+                    console.log(data)
+                    var adcode=data.geocodes[0].adcode;
+
+                    $.ajax({
+                            url: "https://restapi.amap.com/v3/weather/weatherInfo?key=6e8391e2f0b8b47d9f8ea836e3b00d34&extensions=base&output=json&city="+adcode,
+                            type: "get",
+                            data: null,
+                            async:false,
+                            success: function (data) {
+                                console.log(data)
+                                console.log(data.lives[0].weather)
+                                $("#wTitle").text(data.lives[0].city+"天气")
+                                $("#weather").text("当前天气:"+data.lives[0].weather)
+                                $("#temp").text("当前温度:"+data.lives[0].temperature+"度")
+                                $("#nowwind").text("当前风力:"+data.lives[0].winddirection+data.lives[0].windpower+"级")
+                                $("#humi").text("当前湿度:"+data.lives[0].humidity+"%")
+                                $("#updtime").text("更新时间:"+data.lives[0].reporttime)
+
+
+
+                            }
+                        }
+
+
+                    )
+                    $.ajax({
+                            url: "https://restapi.amap.com/v3/weather/weatherInfo?key=6e8391e2f0b8b47d9f8ea836e3b00d34&extensions=all&output=json&city="+adcode,
+                            type: "get",
+                            data: null,
+                            async:false,
+                            success: function (data) {
+                                console.log(data)
+                                $("#tdWeather").text("明天天气：白天:"+data.forecasts[0].casts[0].dayweather+"   晚上:"+data.forecasts[0].casts[0].nightweather)
+                                $("#windD").text("明天风力：白天:"+data.forecasts[0].casts[0].daywind+"风"+data.forecasts[0].casts[0].daypower+"级")
+                                $("#windN").text("          晚上:"+data.forecasts[0].casts[0].nightwind+"风"+data.forecasts[0].casts[0].nightpower+"级")
+                                $("#tTemp").text("白天温度："+data.forecasts[0].casts[0].daytemp+"度")
+                                $("#nTemp").text("夜间温度："+data.forecasts[0].casts[0].nighttemp+"度")
+
+                            }
+                    })
+                }
+            })
+           </script>
+    <script src="/libs/layui/layui.js"></script>
+    <script>
+        layui.use('carousel', function(){
+            var carousel = layui.carousel;
+            var id=[[${attracDetail.attracId}]]
+            $.ajax({
+                    url: "/attrac/getAttracPic/"+id,
+                    type: "get",
+                    data: null,
+                    success: function (data) {
+                        console.log(data)
+                        var singlePic=data.data.split("###")
+                        //console.log(singlePic.length)
+                        for (var i = 0; i < singlePic.length; i++) {
+                            $("#piclist").append
+                            ("<img  src='data:image/png;base64," + singlePic[i] + "'/>");
+                        }
+
+                        carousel.render({
+                            elem: '#picPlay'
+                            ,width: '900px'//设置容器宽度
+                            ,height:'400px'
+                            ,arrow: 'hover'
+                            ,autoplay:'true'//始终显示箭头
+                            ,anim: 'fade' //切换动画方式
+                            ,interval:2600
+                        })
+                    }
+                }
+            )
+        });
+    </script>
+
+<BODY class="page-jingdian page-jingdian_detail">
+<div class="header1">
+    <div class="header1-in">
+        <div class="logo">
+            <a th:href="@{/}"><img src="/img/logo.jpg" alt="说行就行，随行" /></a>
+        </div>
+        <div class="search">
+
+                <div class="search-left">
+                    <select id="searchOption" autocomplete="off">
+                        <option value="A">景点搜索</option>
+                        <option value="W">游记搜索</option>
+                        <option value="G">指南搜索</option>
+                    </select>
+                </div>
+            <form action="#" method="get" id="sForm">
+                <div class="search-center">
+                    <input type="text" name="keyword" class="tex1" placeholder="请输入景点名" />
+                </div>
+                <button class="search-right" type="submit" ></button>
+            </form>
+        </div>
+        </form>
+
+        <div class="zuce">
+
+
+            <div th:if="${session.logonUser}!=null" >
+                <img  th:src="@{'/user/getUserPic/'+${session.logonUser.userId}}" style="width: 60px;height: 60px;border-radius: 30px;">
+
+                <span  class="youhuitu-inl" th:text="'欢迎'+${session.logonUser.userName}"></span>
+                <a th:href="@{/user/logout}"><p >退出登录</p></a>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="nav">
+    <ul class="ul1">
+        <li class="level1 cur first"><a class="a1" href="/">首页</a></li>
+        <li class="level1"><a class="a1" href="#">&nbsp;&nbsp;||&nbsp;&nbsp;</a></li>
+        <li class="level1"><a  class="a1" href="">游记分类</a>
+            <ul class="yincang" >
+                <li th:each="w:${application.wType}">
+                    <a th:href="@{'/work/showWork/'+${w.noteTypeId}}" th:text="${w.noteTypeName}"></a>
+                </li>
+            </ul>
+        </li>
+        <li class="level1">||</li>
+        <li class="level1">
+            <a class="a1" href="">指南分类</a>
+            <ul class="yincang" >
+
+                <li th:each="g:${application.gType}">
+                    <a th:href="@{'/guide/showGuide/'+${g.guideTypeId}}" th:text="${g.guideTypeName}"></a>
+                </li>
+            </ul>
+        </li>
+        <li class="level1"><a class="a1" href="#">||</a></li>
+        <li class="level1">
+            <a class="a1"  th:if="${session.logonUser}==null" th:href="@{/user/login}">登录/注册</a>
+            <a class="a1" th:if="${session.logonUser}!=null" th:href="@{/user/userCenter}">个人中心</a>
+        </li>
+    </ul>
+
+
+</div>
+
+<DIV class="lt-main">
+
+    <DIV class="ltLeft">
+
+    <DIV class="mod-jingdianBox">
+
+    <DIV class="box">
+        <DIV class="title">
+            <p th:text="${attracDetail.attracName}">太姥山</p>
+        </DIV>
+    </DIV>
+
+<DIV class="detail">
+<UL>
+  <LI><SPAN>所在地区：</SPAN>
+  <DIV th:text="${attracDetail.attracCity.cityName}">福州</DIV>
+  </LI>
+  <LI><SPAN>详细地址：</SPAN>				 
+  <DIV th:text="${attracDetail.attracAdd}">宁德市福鼎市秦屿镇九七五县道太姥山</DIV></LI>
+  <LI><SPAN>景点类型：</SPAN>
+  <DIV th:text="${attracDetail.attracType.attracTypeName}">0593-7288002</DIV></LI>
+  <LI><SPAN>游记总数：</SPAN>
+  <DIV th:text="${attracDetail.attracNoteCount}">8:00-17:00</DIV></LI>
+  <LI><SPAN>指南总数：</SPAN>
+  <DIV th:text="${attracDetail.attracGuideCount}">1-2天</DIV></LI>
+    <LI><SPAN>总浏览量：</SPAN>
+        <DIV th:text="${attracDetail.attracClickCount}">1-2天</DIV></LI>
+  <LI><SPAN>最佳季节：</SPAN>				 
+  <DIV>四季皆宜&nbsp;</DIV>
+
+  </LI>
+
+</UL>
+</DIV>
+    </DIV>
+        <button class="mod-jingdianBox" style="background: green ;border-color: green;height: 50px" >
+            <a style="font-size: 15px;font-family: 'Microsoft YaHei UI';color: white" th:if="${session.logonUser}==null" th:href="@{/user/login}" th:text="'想要分享自己的旅游经历？请先登录！'">
+            </a>
+            <a style="font-size: 15px;font-family: 'Microsoft YaHei UI';color: white" th:if="${session.logonUser}!=null" th:href="@{'/work/createWork/'+${attracDetail.attracId}}" th:text="'创建属于自己的游记'">
+            </a>
+        </button>
+<DIV class="mod-sidebar-spot">
+<DIV class="title">附近景点</DIV>
+<DIV class="content">
+<UL>
+    <th:block th:each="ot:${otherAttrac}">
+  <LI th:if="${ot.attracId} != ${attracDetail.attracId}">
+  <DIV class="img">
+      <A th:href="@{'/attrac/attracDetail/'+${ot.attracId}}">
+          <IMG width="99" height="66" title="嵛山岛" align="top" alt="嵛山岛" th:src="@{'/attrac/getAttracSinglePic/'+${ot.attracId}}">
+      </A>
+  </DIV>
+  <P>
+      <A th:href="@{'/attrac/attracDetail/'+${ot.attracId}}" th:text="${ot.attracName}">嵛山岛</A>
+  </P>
+  </LI>
+    </th:block>
+  </UL>
+</DIV>
+</DIV>
+        <DIV class="mod-sidebar-spot">
+            <DIV  id='wTitle' class="title">天气</DIV>
+            <DIV class="content">
+
+                <div style="float: left">
+                    <span id="weather"></span><br>
+                    <span id="temp"></span><br>
+                    <span id="humi"></span><br>
+                    <span id="nowwind"></span><br>
+                    <span id="updtime">
+                    </span>
+                </div>
+            </DIV>
+            <DIV class="content">
+                <div >
+                    <span id="tdWeather"></span><br>
+                    <span id="tTemp"></span><br>
+                    <span id="nTemp"></span><br>
+                    <span id="windD"></span>
+                    <span id="windN"></span><br>
+
+                </div>
+            </DIV>
+
+
+
+        </DIV>
+        <DIV class="mod-sidebar-spot">
+            <DIV class="title">地图</DIV>
+            <DIV class="content" id="container" style="width: 250px;height: 250px">
+
+
+            </DIV>
+        </DIV>
+        <script th:inline="javascript">
+            var place=[[${attracDetail.attracName}]];
+            var map = new BMap.Map("container");
+            // 创建地图实例
+            map.centerAndZoom(new BMap.Point(117.805, 24.436), 15);
+            var local = new BMap.LocalSearch(map, {
+                renderOptions:{map: map}
+            });
+            local.search(place);;
+        </script>
+    </DIV>
+<DIV class="ltRight">
+<DIV class="detail">
+<DIV class=" layui-carousel" id="picPlay">
+    <div carousel-item id="piclist">
+    <!--<IMG width="900" height="400" align="left" th:src="@{'/attrac/getAttracSinglePic/'+${attracDetail.attracId}}">-->
+    </div>
+</DIV>
+<DIV class="right">
+</DIV>
+</DIV>
+<DIV class="mod-products ticket"><!--门票预订--></DIV>
+    <DIV class="mod-products"><!--游记-->
+        <DIV class="title"><I class="icon-title-a5"></I>
+            <SPAN class="title-span1">简介</SPAN>
+        </DIV>
+        <DIV class="content" th:text="${attracDetail.attracTips}">
+
+        </DIV>
+    </DIV>
+<DIV class="mod-products"><!--游记-->				 
+<DIV class="title"><I class="icon-title-a6"></I>
+    <SPAN class="title-span0">游记</SPAN>
+</DIV>
+<DIV class="content">
+<UL class="productUl1">
+    <th:block th:each="w:${linkWork}">
+  <LI>
+  <DIV class="img">
+      <a th:href="@{'/work/workDetail/'+${w.workId}}" >
+          <IMG width="290" height="194" align="top" th:src="@{'/work/getWorkSinglePic/'+${w.workId}}">
+      </a>
+      <I class="icon-line-tip1">游记</I>
+  </DIV>
+  <DIV class="text">
+      <h3  class="footText" th:href="@{'/work/workDetail/'+${w.workId}}" th:text="${w.workTitle}">福建 福鼎</h3><br>
+      <span th:text="'作者：'+${w.workAuthor.userName }"></span><br>
+      <span th:text="'发表时间：'+${#dates.format(w.workCreateTime,'yyyy-MM-dd ')}"></span><br>
+      <span th:text="'描述景点：'+${w.workAttrac.attracName }"></span><br>
+      <span th:text="' 类型：'+${w.workType.noteTypeName}"></span><br>
+  </DIV>
+  </LI>
+    </th:block>
+  </UL>
+</DIV>
+</DIV>
+<DIV class="mod-products"><!--美食特产-->				 
+<DIV class="title"><I class="icon-title-a2"></I>
+    <SPAN class="title-span2">指南</span>
+</DIV>
+<DIV class="content">
+<UL class="productUl1">
+    <th:block th:each="g:${linkGuide}">
+        <LI>
+            <DIV class="img">
+                <a th:href="@{'/guide/guideDetail/'+${g.guideId}}" >
+                    <IMG width="290" height="194" align="top" th:src="@{'/guide/getGuideSinglePic/'+${g.guideId}}">
+                </a>
+                <I class="icon-line-tip1">指南</I>
+            </DIV>
+            <DIV class="text">
+                <h3  class="footText" th:href="@{'/guide/guideDetail/'+${g.guideId}}" th:text="${g.guideTitle}">福建 福鼎</h3><br>
+                <span th:text="'发表时间：'+${#dates.format(g.guideCreateTime,'yyyy-MM-dd ')}"></span><br>
+                <span th:text="'描述景点：'+${g.guideAttrac.attracName }"></span><br>
+                <span th:text="' 类型：'+${g.guideType.guideTypeName}"></span><br>
+            </DIV>
+        </LI>
+    </th:block>
+</UL>
+</DIV>
+</DIV>
+</DIV>
+</DIV>
+ </BODY></HTML>

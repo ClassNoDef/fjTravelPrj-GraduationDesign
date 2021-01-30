@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <script th:src="@{/libs/jquery-validation/jquery.validate.min.js}" ></script>
+    <script th:src="@{/libs/jquery-validation/messages_zh.min.js}" ></script>
+    <script th:src="@{/libs/laydate/laydate.js}" ></script>
+    <style>
+        #errmsg{
+            color:red;
+        }
+        img{
+            width: 150px;
+            height: 150px;
+            border-radius: 75px;
+            border: 2px solid blue;
+        }
+        #op{
+            display: inline-block;
+        }
+        #pr{
+            display: inline-block;
+            height: 182px;
+            float: right;
+            position: relative;
+        }
+
+        input.error { border: 1px solid red; }
+        label.error {
+
+            margin-top: 2px;
+            background:url("../../img/validation/unchecked.gif") no-repeat 5px center;
+
+            padding-left: 25px;
+
+
+            font-weight: bold;
+
+            color: #EA5200;
+        }
+        label.checked {
+
+            margin-top: 2px;
+            background:url("../../img/validation/checked.gif") no-repeat 5px center;
+
+            padding-left: 25px;
+
+
+            font-weight: bold;
+
+            color: blue;
+        }
+    </style>
+    <script th:inline="javascript">
+        //thymeleaf无法回填的临时解决方法
+        laydate.render({
+            elem: '#cal'
+        });
+
+        $(function () {
+            $("#cal").val([[${#dates.format(preUpdateUser.userBirthday,'yyyy-MM-dd')}]])
+            $("#userPic").change(function () {
+                previewImg()
+            })
+
+            $("#updForm").validate({
+                rules: {
+
+                    userName: {
+                        required: true,
+                        maxlength: 24,
+
+                    },
+                    userPwd: {
+                        required: true,
+                        minlength: 6,
+
+                    },
+                    rePwd: {
+                        required: true,
+                        minlength: 6,
+                        equalTo: "#pwd"
+                    },
+                    userSex: {
+                        required: true
+                    },
+                    userBirthday: {
+                        required: true,
+                        date: true
+                    },
+                    userEmail: {
+                        required: true,
+                        email: true,
+
+
+                    },
+                    userPhone: {
+                        required: true,
+
+                    },
+
+                    messages: {
+                        userName: {
+                            required: "请输入用户名",
+                            //remote: "该用户名已经被注册",
+                            maxlength: "用户名太长！"
+                        },
+                        userPwd: {
+                            required: "请输入密码",
+                            minlength: "密码太短！",
+
+                        },
+                        rePwd: {
+                            required: "请再次输入密码",
+                            minlength: "密码太短！",
+                            equalTo: "两次输入的密码不一致！"
+                        },
+                        userSex: {
+                            required: "请选择性别"
+                        },
+                        userBirthday: {
+                            required: "请输入生日",
+                            date: "输入日期不合法！"
+                        },
+                        userEmail: {
+                            required: "请输入邮箱",
+                            email: "输入邮箱不合法！",
+                            //remote: "该邮箱已经被注册",
+                        },
+                        userPhone: {
+                            required: "请输入手机号",
+                            //remote: "该手机号已经被注册",
+                            maxlength: "手机号必须是11位！",
+                            minlength: "手机号必须是11位！",
+                        },
+                    },
+
+                    submitHandler: function (form) {
+                        form.submit();
+                    },
+
+                    success: function (label) {
+                        // set &nbsp; as text for IE
+                        label.html("&nbsp;").addClass("checked");
+                        label.addClass("checked").text("验证通过")
+                    },
+
+                    /*errorPlacement: function(error, element/*jQuery对象？) {
+                    if (element.is(":radio"))
+                        error.appendTo(element.parent().next().next());
+                    else if (element.is(":checkbox"))
+                        error.appendTo(element.next());
+                    else
+                        error.appendTo(element.parent().next());
+                },*/
+                    /*可以给未通过验证的元素加效果、闪烁等。*/
+                    highlight: function (element/*非jQuery对象？*/, errorClass) {
+                        $(element).parent().find("." + errorClass).removeClass("checked");
+                    }
+
+
+                }
+            })
+        })
+
+        function previewImg() {
+            var extCheck = true;
+            //每次切换前，把之前的预览图片清空
+            document.getElementById("previewImg").innerHTML = "";
+
+            //开始遍历图
+            var img = document.getElementById("userPic").files;
+            for (var i = 0; i < img.length; i++) {
+                var name = img[i].name
+                var idx = name.lastIndexOf(".")
+                if (idx != -1) {
+                    var ext = name.substring(idx + 1, name.length).toLowerCase()
+                }
+                console.log(ext)
+                if (ext === "jpg" || ext === "png" || ext === "jpeg") ;
+                else {
+                    extCheck = false
+                }
+                console.log(extCheck)
+            }
+
+            if (extCheck == false) {
+                alert("上传的图片中有不支持的格式")
+                var f = document.getElementById("userPic");
+                f.value = ''
+            }
+            for (var i = 0; i < img.length; i++) {
+                var file = img[i];
+                var url = URL.createObjectURL(file);
+                var box = document.createElement("img");
+                box.setAttribute("src", url);
+                //box.className='previewImg';
+                box.setAttribute("width", 100 + 'px');
+                box.setAttribute("heigh", 100 + 'px');
+                //append到页面上
+                var body = document.getElementsByClassName("previewImg")[0];
+                body.appendChild(box);
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div id="wrapper">
+        <h3 class="py-3">用户信息更新</h3>
+        <p id="errmsg" th:text="${errmsg}"></p>      <!--???-->
+        <form id="updForm" th:action="@{/user/updateInfo}" th:object="${preUpdateUser}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label >用户ID</label>
+                <input  type="text" class="form-control form-control-sm" th:field="*{userId}"  readonly>
+            </div>
+            <div class="form-group">
+                <label >用户名</label>
+                <input id="name" type="text" class="form-control form-control-sm" th:field="*{userName}" >
+            </div>
+            <div class="form-group">
+                <label>性别</label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio"  name="userSex" id="userSexM" value="M" th:checked="${preUpdateUser.userSex eq 'M'}">
+                    <label class="form-check-label" for="userSexM">男</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio"  name="userSex" id="userSexF" value="F"  th:checked="${preUpdateUser.userSex eq 'F'}">
+                    <label class="form-check-label" for="userSexF">女</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label >用户头像</label>
+                <div id="op" >
+                    <span>原头像</span>
+                    <div id="oldPic" >
+                        <img th:src="@{'/user/getUserPic/'+${preUpdateUser.userId}}">
+                    </div>
+                </div>
+                <div id="pr" >
+                     <span>头像预览</span>
+                    <div id="previewImg" class="previewImg"  >
+                        <p>未上传图片</p>
+                    </div>
+                </div>
+                <h3></h3>
+                <input type="file" class="form-control-file" id="userPic" name="userpic" >
+            </div>
+            <div class="form-group">
+                <label>出生日期</label>
+                <input class="form-control" type="date" id="cal"  th:field="*{userBirthday}" >
+            </div>
+            <div class="form-group">
+                <label>个人邮箱</label>
+                <input id="email" class="form-control" type="email" th:field="*{userEmail}">
+            </div>
+            <div class="form-group">
+                <label>电话号码</label>
+                <input id="phone" class="form-control" type="number" th:field="*{userPhone}">
+            </div>
+            <div class="form-group">
+                <label>用户签名</label>
+                <textarea class="form-control" rows="3" th:field="*{userNote}">
+
+                </textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm"> 更新信息 </button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

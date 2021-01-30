@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/libs/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                    url: "/guideMgr/getGuideType",
+                    type: "get",
+                    data: null,
+                    //async:false,
+                    success: function (data) {
+                        console.log(data)
+                        $("#gqtype").append
+                        ("<option value=''>请选择</option>");
+                        for (var i = 0; i < data.data.length; i++) {
+
+                            $("#gqtype").append
+                            ("<option value='" + data.data[i].guideTypeId + "'>" + data.data[i].guideoTypeName + "</option>");
+                        }
+                    }
+                }
+            );
+            init()
+
+            $("#query").click(function () {
+                var gqData={
+                    queryGuideTitle:$("#gqname").val(),
+                    // queryWorkAuthorId;
+                    queryGuideType:$("#gqtype").val(),
+                    // queryWorkAttracId;
+                }
+
+                $.ajax({
+                    url: "/guideMgr/loadAllGuidesAjax",
+                    type: "post",
+                    async: true,
+                    data: gqData,
+                    dataType: 'json',
+                    success: function (data) {
+                        $("#noCheck").html(" ")
+                        $("#checked").html(" ")
+                        $("#fb").html(" ")
+                        for(var i=0;i<data.length;i++){
+                            if(data[i].guideStatus==0){
+                                $("#noCheck").append(
+                                    "<tr>" +
+                                    "<td>"+data[i].guideId+"</td>"+
+                                    "<td>"+data[i].guideTitle+"</td>"+
+                                    "<td>"+data[i].guideAuthor.adminName+"</td>"+
+                                    "<td>"+data[i].guideCreateTime+"</td>"+
+                                    "<td>"+data[i].guideType.guideTypeName+"</td>"+
+                                    "<td>"+data[i].guideAttrac.attracName+"</td>"+
+                                    "<td><button>aa</button></td>"+
+                                    "</tr>"
+                                )
+                            }
+                            else if(data[i].guideStatus==1){
+                                $("#checked").append(
+                                    "<tr>" +
+                                    "<td>"+data[i].guideId+"</td>"+
+                                    "<td>"+data[i].guideTitle+"</td>"+
+                                    "<td>"+data[i].guideAuthor.adminName+"</td>"+
+                                    "<td>"+data[i].guideCreateTime+"</td>"+
+                                    "<td>"+data[i].guideType.guideTypeName+"</td>"+
+                                    "<td>"+data[i].guideAttrac.attracName+"</td>"+
+                                    "<td><button>aa</button></td>"+
+                                    "</tr>"
+                                )
+                            }
+
+                            else if(data[i].guideStatus==2){
+                                $("#fb").append(
+                                    "<tr>" +
+                                    "<td>"+data[i].guideId+"</td>"+
+                                    "<td>"+data[i].guideTitle+"</td>"+
+                                    "<td>"+data[i].guideAuthor.adminName+"</td>"+
+                                    "<td>"+data[i].guideCreateTime+"</td>"+
+                                    "<td>"+data[i].guideType.guideTypeName+"</td>"+
+                                    "<td>"+data[i].guideAttrac.attracName+"</td>"+
+                                    "<td><button>aa</button></td>"+
+                                    "</tr>"
+                                )
+                            }
+
+                        }
+                    }
+                })
+            })
+        })
+
+        function init() {
+            var gqData={
+                queryGuideTitle:"",
+            // queryWorkAuthorId;
+             queryGuideType:"",
+            // queryWorkAttracId;
+            }
+
+            $.ajax({
+                url: "/guideMgr/loadAllGuidesAjax",
+                type: "post",
+                async: true,
+                data: gqData,
+                dataType: 'json',
+                success: function (data) {
+                    $("#noCheck").html(" ")
+                    $("#checked").html(" ")
+                    $("#fb").html(" ")
+                    for(var i=0;i<data.length;i++){
+                        if(data[i].guideStatus==0){
+                            $("#noCheck").append(
+                                "<tr>" +
+                                "<td>"+data[i].guideId+"</td>"+
+                                "<td>"+data[i].guideTitle+"</td>"+
+                                "<td>"+data[i].guideAuthor.adminName+"</td>"+
+                                "<td>"+data[i].guideCreateTime+"</td>"+
+                                "<td>"+data[i].guideType.guideTypeName+"</td>"+
+                                "<td>"+data[i].guideAttrac.attracName+"</td>"+
+                                "<td><button>aa</button></td>"+
+                                "</tr>"
+                            )
+                        }
+                        else if(data[i].guideStatus==1){
+                            $("#checked").append(
+                                "<tr>" +
+                                "<td>"+data[i].guideId+"</td>"+
+                                "<td>"+data[i].guideTitle+"</td>"+
+                                "<td>"+data[i].guideAuthor.adminName+"</td>"+
+                                "<td>"+data[i].guideCreateTime+"</td>"+
+                                "<td>"+data[i].guideType.guideTypeName+"</td>"+
+                                "<td>"+data[i].guideAttrac.attracName+"</td>"+
+                                "<td><button>aa</button></td>"+
+                                "</tr>"
+                            )
+                        }
+
+                        else if(data[i].guideStatus==2){
+                            $("#fb").append(
+                                "<tr>" +
+                                "<td>"+data[i].guideId+"</td>"+
+                                "<td>"+data[i].guideTitle+"</td>"+
+                                "<td>"+data[i].guideAuthor.adminName+"</td>"+
+                                "<td>"+data[i].guideCreateTime+"</td>"+
+                                "<td>"+data[i].guideType.guideTypeName+"</td>"+
+                                "<td>"+data[i].guideAttrac.attracName+"</td>"+
+                                "<td><button>aa</button></td>"+
+                                "</tr>"
+                            )
+                        }
+
+                    }
+                }
+            })
+
+        }
+    </script>
+</head>
+<body>
+<input type="text" id="gqname">
+<select id="gqtype">
+
+
+</select>
+<button id="query">查询</button>
+<h1> 未检查</h1>
+<table >
+    <thead>
+    <tr>
+        <th >ID</th>
+        <th >标题</th>
+        <th >作者</th>
+        <th >创建时间</th>
+        <th >作品类型</th>
+        <th >描述景点</th>
+        <th >操作</th>
+
+    </tr>
+    </thead>
+    <tbody id="noCheck">
+
+    </tbody>
+</table>
+
+<h1> 已检查</h1>
+<table >
+    <thead>
+    <tr>
+        <th >ID</th>
+        <th >标题</th>
+        <th >作者</th>
+        <th >创建时间</th>
+        <th >作品类型</th>
+        <th >描述景点</th>
+        <th >操作</th>
+
+    </tr>
+    </thead>
+    <tbody id="checked">
+
+    </tbody>
+</table>
+
+<h1> 已屏蔽</h1>
+<table >
+    <thead>
+    <tr>
+        <th >ID</th>
+        <th >标题</th>
+        <th >作者</th>
+        <th >创建时间</th>
+        <th >作品类型</th>
+        <th >描述景点</th>
+        <th >操作</th>
+
+    </tr>
+    </thead>
+    <tbody id="fb">
+
+    </tbody>
+</table>
+</body>
+</html>

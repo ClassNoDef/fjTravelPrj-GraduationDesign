@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<ul>
+    <li th:text="${user.userId}"></li>
+    <li th:text="${user.userName}"></li>
+    <li th:if="${user.userSex} eq 'M'">男</li>
+    <li th:if="${user.userSex} eq 'F'">女</li>
+    <li th:text="${#dates.format(user.userBirthday,'yyyy-MM-dd ')}"></li>
+    <li th:text="${user.userPhone}"></li>
+    <li th:text="${user.userEmail}"></li>
+    <li th:text="${user.userNote}"></li>
+<img width="200 px" height="200px" th:src="@{'/user/getUserPic/'+${user.userId}}">
+</ul>
+<a href="/user/toUpdateInfo"> 更新个人信息</a>
+<a href="/work/myWork">我的游记</a>
+<a href="/user/toUpdatePwd">更改密码</a>
+<a href="/user/logout">退出登录</a>
+</body>
+</html>

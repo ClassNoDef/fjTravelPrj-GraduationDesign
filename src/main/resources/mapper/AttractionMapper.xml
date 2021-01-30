@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.travel.fj.dao.AttractionDao">
+    <insert id="createAttraction" parameterType="Attraction">
+        insert  into tbl_attractions
+        (attrac_id,attrac_name,attrac_city ,attrac_add,attrac_type,
+        attrac_tips,attrac_pic_file_list)
+        values(#{attracId},#{attracName},#{attracCity.cityId},#{attracAdd},#{attracType.attracTypeId},
+        #{attracTips} ,#{attracPicFileList})
+    </insert>
+
+    <select id="loadAllAttractions" resultMap="attractionData">
+        select
+        attrac_id,attrac_name,attrac_city,attrac_add,attrac_type,attrac_tips,attrac_note_count,attrac_guide_count,attrac_click_count
+        from tbl_attractions where is_blocked=0
+    </select>
+
+    <select id="loadQueryAttractions" resultMap="attractionData">
+        select
+        attrac_id,attrac_name,attrac_city,attrac_add,attrac_type,attrac_tips,attrac_note_count,attrac_guide_count,attrac_click_count
+        from tbl_attractions
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="helper.queryAttracName != null">
+                attrac_name like concat('%',#{helper.queryAttracName},'%')
+            </if>
+            <if test="helper.queryAttracCity != null">
+                AND attrac_city = #{helper.queryAttracCity}
+            </if>
+            <if test="helper.queryAttracAdd!= null">
+                AND attrac_add like concat('%',#{helper.queryAttracAdd},'%')
+            </if>
+            <if test="helper.queryAttracType!= null">
+                AND attrac_type = #{helper.queryAttracType}
+            </if>
+        </trim>
+                AND  is_blocked=0
+    </select>
+
+    <select id="loadQueryAndPagedAttractions" resultMap="attractionData">
+        select
+        attrac_id,attrac_name,attrac_city,attrac_add,attrac_type,attrac_tips,attrac_note_count,attrac_guide_count,attrac_click_count
+        from tbl_attractions
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="helper.queryAttracName != null">
+                attrac_name like concat('%',#{helper.queryAttracName},'%')
+            </if>
+            <if test="helper.queryAttracCity != null">
+                AND attrac_city = #{helper.queryAttracCity}
+            </if>
+            <if test="helper.queryAttracAdd!= null">
+                AND attrac_add like concat('%',#{helper.queryAttracAdd},'%')
+            </if>
+            <if test="helper.queryAttracType!= null">
+                AND attrac_type = #{helper.queryAttracType}
+            </if>
+
+        </trim>
+        AND  is_blocked=0  order by attrac_id asc limit #{startIndex},#{fetchSize}
+
+    </select>
+
+    <select id="loadQueryAndPagedAttractionsForAdmin" resultMap="attractionData">
+        select
+        attrac_id,attrac_name,attrac_city,attrac_add,attrac_type,attrac_tips,attrac_note_count,attrac_guide_count,attrac_click_count,is_blocked
+        from tbl_attractions
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="helper.queryAttracName != null">
+                attrac_name like concat('%',#{helper.queryAttracName},'%')
+            </if>
+            <if test="helper.queryAttracCity != null">
+                AND attrac_city = #{helper.queryAttracCity}
+            </if>
+            <if test="helper.queryAttracAdd!= null">
+                AND attrac_add like concat('%',#{helper.queryAttracAdd},'%')
+            </if>
+            <if test="helper.queryAttracType!= null">
+                AND attrac_type = #{helper.queryAttracType}
+            </if>
+
+        </trim>
+        order by attrac_id asc limit #{startIndex},#{fetchSize}
+
+    </select>
+
+    <select id="getQueryAttracCount" resultType="int">
+    select
+    count(*)
+    from tbl_attractions
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        <if test="helper.queryAttracName != null">
+            attrac_name like concat('%',#{helper.queryAttracName},'%')
+        </if>
+        <if test="helper.queryAttracCity != null">
+            AND attrac_city = #{helper.queryAttracCity}
+        </if>
+        <if test="helper.queryAttracAdd!= null">
+            AND attrac_add like concat('%',#{helper.queryAttracAdd},'%')
+        </if>
+        <if test="helper.queryAttracType!= null">
+            AND attrac_type = #{helper.queryAttracType}
+        </if>
+    </trim>
+
+    AND  is_blocked=0
+</select>
+
+
+    <select id="getQueryAttracCountForAdmin" resultType="int">
+        select
+        count(*)
+        from tbl_attractions
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="helper.queryAttracName != null">
+                attrac_name like concat('%',#{helper.queryAttracName},'%')
+            </if>
+            <if test="helper.queryAttracCity != null">
+                AND attrac_city = #{helper.queryAttracCity}
+            </if>
+            <if test="helper.queryAttracAdd!= null">
+                AND attrac_add like concat('%',#{helper.queryAttracAdd},'%')
+            </if>
+            <if test="helper.queryAttracType!= null">
+                AND attrac_type = #{helper.queryAttracType}
+            </if>
+        </trim>
+    </select>
+
+    <select id="getAttractionById" parameterType="int" resultMap="attractionData">
+        select attrac_id,attrac_name,attrac_city,attrac_add,attrac_type,attrac_tips,attrac_note_count,attrac_guide_count,attrac_click_count,is_blocked
+        from tbl_attractions where attrac_id=#{id} AND is_blocked=0
+    </select>
+
+    <select id="getAttractionByIdIgnoreBlocked" parameterType="int" resultMap="attractionData">
+        select attrac_id,attrac_name,attrac_city,attrac_add,attrac_type,attrac_tips,attrac_note_count,attrac_guide_count,attrac_click_count,is_blocked
+        from tbl_attractions where attrac_id=#{id}
+    </select>
+
+    <select id="getPopularAttrac" resultMap="attractionData">
+        select attrac_id,attrac_name,attrac_city,attrac_add,attrac_type,attrac_tips,attrac_note_count,attrac_guide_count,attrac_click_count
+        from tbl_attractions where is_blocked=0  order by attrac_click_count desc limit 6
+    </select>
+
+    <select id="getRandomAttrac" resultMap="attractionData">
+        select attrac_id,attrac_name,attrac_city,attrac_add,attrac_type,attrac_tips,attrac_note_count,attrac_guide_count,attrac_click_count,RAND() as r
+        from tbl_attractions  where is_blocked=0  order by r limit 8
+    </select>
+    <select id="getAttractionPicFileList" parameterType="int" resultType="string">
+        select attrac_pic_file_list
+        from tbl_attractions where attrac_id=#{id}
+    </select>
+
+    <update id="updateAttraction" parameterType="Attraction">
+        update tbl_attractions set attrac_id=#{attracId},attrac_name=#{attracName},attrac_city=#{attracCity.cityId} ,attrac_add=#{attracAdd},attrac_type=#{attracType.attracTypeId},
+        attrac_tips=#{attracTips},attrac_pic_file_list=#{attracPicFileList} where attrac_id=#{attracId}
+    </update>
+
+    <update id="updateAttractionData" parameterType="Attraction">
+        update tbl_attractions
+        <trim prefix="SET"
+              suffixOverrides="," >
+            <if test="attracNoteCount!=null"> attrac_note_count = #{attracNoteCount},</if>
+            <if test="attracGuideCount!=null"> attrac_guide_count = #{attracGuideCount},</if>
+        </trim>
+        where attrac_id = #{attracId}
+    </update>
+
+    <update id="updateAttracClickCount" parameterType="Attraction">
+        update tbl_attractions
+        <trim prefix="SET"
+              suffixOverrides="," >
+            <if test="attracClickCount!=null"> attrac_click_count = #{attracClickCount},</if>
+        </trim>
+        where attrac_id = #{attracId}
+    </update>
+
+    <update id="deleteAttraction" parameterType="Attraction">
+        update tbl_attractions
+        set is_blocked = 1
+        where attrac_id = #{attracId}
+    </update>
+
+
+    <update id="recoveryAttraction" parameterType="Attraction">
+        update tbl_attractions
+        set is_blocked = 0
+        where attrac_id = #{attracId}
+    </update>
+
+
+
+
+    <resultMap id="attractionData" type="Attraction">
+        <id column="attrac_id" property="attracId"/>
+        <result column="attrac_name" property="attracName"/>
+        <result column="attrac_add" property="attracAdd"/>
+        <result column="attrac_tips" property="attracTips"/>
+        <result column="attrac_note_count" property="attracNoteCount"/>
+        <result column="attrac_guide_count" property="attracGuideCount"/>
+        <association property="attracCity"  column="attrac_city" javaType="City" select="com.travel.fj.dao.CityDao.getCityById"/>
+        <association property="attracType" column="attrac_type" javaType="AttractionType" select="com.travel.fj.dao.AttractionTypeDao.getAttracTypeById"/>
+    </resultMap>
+</mapper>

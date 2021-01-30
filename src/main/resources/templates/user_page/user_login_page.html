@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>用户登录</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/userLogin/style.css}"  />
+    <style>
+        body{height:100%;background: #152ba0;overflow:hidden;}
+        canvas{z-index:-1;position:absolute;}
+        img{margin-left: 3px; display: inline-block ;border-color:#152ba0 }
+        #errmsg{color:red;}
+        #errmsgU,#errmsgP,#veriCodeErr{color:red;display: inline-block}
+    </style>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/js/userLogin/Particleground.js}" ></script>
+    <script th:src="@{/js/userLogin/userLoginFormCheck.js}" ></script>
+    <script th:src="@{/js/userLogin/login.js}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            //粒子背景特效
+            $('body').particleground({
+                dotColor: '#1c7ebd',
+                lineColor: '#335cbd'
+            });
+        })
+        //绑定各个相关事件
+        //在DOM加载完成之后绑定，所以用$(function(){....../*各个绑定函数*/})
+        function changeVeriCode(codePic){
+            codePic.src="/user/vericode?"+Math.random();
+        }
+        $(function(){
+            //点击更换验证码
+            $("img").click(function () {
+                this.src="/user/vericode?"+Math.random();
+            });
+            $("#elogin").click(function () {
+                emailLogin()
+            })
+            $("#nlogin").click(function () {
+                nameLogin()
+            })
+            $("#plogin").click(function () {
+                phoneLogin()
+            })
+            //检查用户名
+            $("#userName").blur(function () {
+               userNameCheck()
+            })
+            $("#userEmail").blur(function () {
+                userEmailCheck()
+            })
+            $("#userPhone").blur(function () {
+                userPhoneCheck()
+            })
+            //检查密码
+            $("#userPwd").blur(function () {
+                userPwdCheck()
+            })
+            //检查验证码
+            $("#veriCode").keyup(function () {
+                checkVeriCode()
+            })
+            //检查整个表单并提交
+            $(".submit_btn").click(function () {
+                submitForm()
+            })
+        })
+    </script>
+</head>
+<body>
+<dl class="admin_login">
+    <dt>
+        <strong>用户登录</strong>
+        <em>fj.travel.com</em>
+        <p id="errmsg" th:text="${errmsg}"></p>      <!--???-->
+    </dt>
+
+    <div id="sw_btn">
+        <button id="nlogin" style="display: none">用户名登录</button>
+        <button id="elogin">邮箱登录</button>
+        <button id="plogin">手机号登录</button>
+    </div>
+    <form   action="#"  id="userLoginForm" th:action="@{/user/login}" th:object="${user}" method="post">
+        <div id="dymForm">
+        <input type="hidden" name="loginType" value="n">
+
+        <dd class="user_icon">
+            <input type="text" placeholder="用户名" class="login_txtbx" id="userName"th:field="*{userName}"  />
+        </dd>
+        <p id="errmsgU"></p>
+        <dd class="pwd_icon">
+            <input type="password" placeholder="密码" class="login_txtbx" id="userPwd" th:field="*{userPwd}"/>
+        </dd>
+        <p id="errmsgP"></p>
+        <dd class="val_icon">
+            <div class="checkcode">
+                <input type="text" id="veriCode"  class="login_txtbx" placeholder="验证码(不区分大小写)"  >
+            </div>
+            <img  src="/user/vericode" width="112px">
+        </dd>
+        <p id="veriCodeErr"></p>
+        </div>
+        <dd>
+            <input type="button" value="立即登录" class="submit_btn" />
+        </dd>
+    </form>
+    <a th:href="@{/user/register}">没有帐户？点此注册</a><br>
+    <h1></h1>
+    <a th:href="@{/}">返回首页</a>
+    <a th:href="@{/user/forgotPwd}">忘记密码</a><br>
+    <dd>
+        <p>© 2018-2099 LING 版权所有</p>
+        <p>福州大学至诚学院</p>
+    </dd>
+</dl>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <script th:src="@{/js/adminLoginFormCheck.js}" ></script>
+    <style>
+        #errmsg{
+            color:red;
+        }
+        #veriCodeErr{
+            color:red;
+        }
+    </style>
+
+        <script type="text/javascript">
+            function updateVericode(obj){
+                obj.src="/admin/vericode?"+Math.random();<!--不要忘记加"?"以使其带上随即参数-->
+            }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div id="wrapper">
+        <h3 class="py-3">系统登录</h3>
+        <p id="errmsg" th:text="${errmsg}"></p>      <!--???-->
+        <form   action="#"  id="adminLoginForm" th:action="@{/admin/login}" th:object="${admin}" method="post">
+            <div class="form-group">
+                <label >用户名:</label>
+
+                <input type="text" class="form-control form-control-sm"  id="adminName"th:field="*{adminName}"  onblur="adminNameCheck()">
+
+            </div>
+            <div class="form-group">
+                <label >登录密码:</label>
+                <input type="password" class="form-control form-control-sm" id="adminPwd" th:field="*{adminPwd}" onblur="adminPwdCheck()">
+            </div>
+            <div class="form-group">
+                <label >验证码:</label>
+                <img src="/admin/vericode" onclick="updateVericode(this)"><p id="veriCodeErr"></p>
+                <!--onkeyup 才是实现在输入时就会进行验证的表单事件，onblur与onchange均是在鼠标离开输
+                入框后才会发生-->
+                <input type="text" id="subVericode"  class="form-control form-control-sm" onkeyup="checkVeriCode()">
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="submitForm()" > 登 录 </button>
+        </form>
+    </div>
+</div>
+
+
+
+</body>
+</html>

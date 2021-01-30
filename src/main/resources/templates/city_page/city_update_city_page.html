@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/libs/bootstrap/css/bootstrap.css}" rel="stylesheet"/>
+    <script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/libs/popper/popper.min.js}" ></script>
+    <script th:src="@{/libs/bootstrap/js/bootstrap.min.js}" ></script>
+    <script th:src="@{/libs/jquery-validation/jquery.validate.min.js}" ></script>
+    <script th:src="@{/libs/jquery-validation/messages_zh.min.js}" ></script>
+    <style>
+        #errmsg{
+            color:red;
+        }
+        #pic{
+            width: 200px;
+            height: 200px;
+        }
+
+        input.error { border: 1px solid red; }
+        label.error {
+
+            margin-top: 2px;
+            background:url("../../img/validation/unchecked.gif") no-repeat 5px center;
+
+            padding-left: 25px;
+
+
+            font-weight: bold;
+
+            color: #EA5200;
+        }
+        label.checked {
+
+            margin-top: 2px;
+            background:url("../../img/validation/checked.gif") no-repeat 5px center;
+
+            padding-left: 25px;
+
+
+            font-weight: bold;
+
+            color: blue;
+        }
+    </style>
+    <script>
+        $(function () {
+            $("#cityPic").change(function () {
+                previewImg()
+            })
+
+            jQuery.validator.addMethod("isChinese", function(value, element) {
+                return this.optional(element) || /^[\u0391-\uFFE5]+$/.test(value);
+            }, "只能包含中文字符。");
+
+            // 判断英文字符
+            jQuery.validator.addMethod("isEnglish", function(value, element) {
+                return this.optional(element) || /^[A-Za-z]+$/.test(value);
+            }, "只能包含英文字符。");
+
+            $("#cityForm").validate({
+                rules:{
+
+                    cityName:{
+                        required:true,
+                        isChinese:true
+
+                    },
+                    cityEngName:{
+                        required:true,
+                        isEnglish:true
+                    },
+                },
+
+                messages:{
+                    cityName:{
+                        required:"请输入城市名",
+                    },
+                    cityEngName:{
+                        required:"请输入城市英文名",
+                    },
+                },
+
+                submitHandler:function(form) {
+                    form.submit();
+                },
+
+                success: function(label) {
+                    // set &nbsp; as text for IE
+                    label.html("&nbsp;").addClass("checked");
+                    label.addClass("checked").text("验证通过")
+                },
+
+                /*可以给未通过验证的元素加效果、闪烁等。*/
+                highlight: function(element/*非jQuery对象？*/, errorClass) {
+                    $(element).parent().find("." + errorClass).removeClass("checked");
+                }
+
+
+
+            })
+
+            $.ajax({
+                    url: "/cityMgr/getCityPicAjax/"+[[${preUpdateCity.cityId}]],
+                    type: "get",
+                    data: null,
+                    success: function (data) {
+                        console.log(data)
+                        var singlePic=data.data
+                        //console.log(singlePic.length)
+                        //for (var i = 0; i < singlePic.length; i++) {
+                            $("#oldPic").append
+                            ("<img id='pic' src='data:image/png;base64," + singlePic + "'/>");
+                        //}
+                    }
+                }
+            )
+        })
+
+
+        function previewImg(){
+            var extCheck=true;
+            //每次切换前，把之前的预览图片清空
+            document.getElementById("previewImg").innerHTML="";
+
+            //开始遍历图
+            var img=document.getElementById("cityPic").files;
+            for(var i=0;i<img.length;i++){
+                var name=img[i].name
+                var idx=name.lastIndexOf(".")
+                if(idx!=-1){
+                    var ext=name.substring(idx+1,name.length).toLowerCase()
+                }
+                console.log(ext)
+                if(ext==="jpg"||ext==="png"||ext==="jpeg");
+                else{extCheck=false}
+                console.log(extCheck)
+            }
+
+            if(extCheck==false){
+                alert("上传的图片中有不支持的格式")
+                var f=document.getElementById("cityPic");
+                f.value=''
+            }
+            for(var i=0;i<img.length;i++){
+                var file=img[i];
+                var url=URL.createObjectURL(file);
+                var box=document.createElement("img");
+                box.setAttribute("src",url);
+                box.setAttribute("width",200+'px');
+                box.setAttribute("height",200+'px');
+                //append到页面上
+                var body=document.getElementsByClassName("previewImg")[0];
+                body.appendChild(box);
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div id="wrapper">
+        <a th:href="@{/cityMgr/loadCitys}">返回列表</a>
+        <h3 class="py-3">更新设区市信息</h3>
+        <p id="errmsg" th:text="${errmsg}"></p>      <!--???-->
+        <form id="cityForm" th:action="@{/cityMgr/updateCity}" th:object="${preUpdateCity}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label >ID</label>
+                <input type="text" class="form-control form-control-sm" th:field="*{cityId}"  readonly>
+            </div>
+            <div class="form-group">
+                <label >新设区市名</label>
+                <input type="text" class="form-control form-control-sm" th:field="*{cityName}" >
+            </div>
+            <div class="form-group">
+                <label >英文名</label>
+                <input type="text" class="form-control form-control-sm" th:field="*{cityEngName}">
+            </div>
+            <p>原配图</p>
+            <div id="oldPic">
+
+            </div>
+            <div class="form-group">
+                <label>请上传设区市简介图</label>
+                <input type="file" class="form-control-file" name="citypic" id="cityPic" >
+            </div>
+            <div class="previewImg" id="previewImg">
+
+            </div>
+            <div class="form-group">
+                <label>设区市简介</label>
+                <textarea class="form-control"  rows="3" th:field="*{cityTips}"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm"> 更新 </button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

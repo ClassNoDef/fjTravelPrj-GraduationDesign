@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link type="text/css" rel="stylesheet" href="/css/attracShowPage/core.css">
+    <link type="text/css" rel="stylesheet" href="/css/attracShowPage/home.css">
+    <link type="text/css" rel="stylesheet" href="/css/attracShowPage/icon.css">
+    <script type="text/javascript" src="/libs/jquery/jquery-3.3.1.min.js"></script>
+    <script th:inline="javascript">
+        $(function () {
+            var qData={
+
+                "queryAttracType":[[${queryAttracTypeId}]],
+
+
+            };
+
+            $.ajax({
+                    url : "/attrac/searchAttrac",
+                    type : "post",
+                    async : true,
+
+                    data : qData,
+                    dataType : 'json',
+                    success : function(data) {
+                        console.log(data)
+                        $("#result").html(" ")
+                        var str="";
+                        for(var i=0;i<data.length; i++){
+                            str +=
+                                "<div class='ydc-group-table-item'>"+
+                                "<div class='ydc-group-table-item-img'>"+
+                                "<img src='/attrac/getAttracSinglePic/"+data[i].attracId+"' >"+
+                                "</div>"+
+                                "<div class='ydc-actions'>"+
+                                "<div>"+
+                                "<button class='ydc-actions-trigger'></button>"+
+                                "</div>"+
+                                "</div>"+
+                                "<div class='ydc-group-table-item-text'>"+
+                                "<span>"+
+                                "<a href='/attrac/attracDetail/"+data[i].attracId+"'>"+data[i].attracName +"</a>"+
+                                "</span>"+
+                                "</div>"+
+                                "<div class='ydc-group-table-item-info'>"+
+                                "<span> 景点类型："+data[i].attracType.attracTypeName+"</span>"+
+                                "<span> 浏览量："+data[i].attracClickCount+"</span>"+
+                                "</div>"+
+                                "</div>";
+                        }
+                        console.log(str);
+                        $("#result").html(str);
+                        $("#count").text(data.length)
+                        $("#mainTitle").text(data[0].attracType.attracTypeName)
+                        $("Title").text(data[0].attracType.attracTypeName+"--景点列表")
+                    }
+                }
+            );
+
+
+
+        });
+
+
+
+    </script>
+</head>
+<body>
+
+
+
+<section>
+    <div class="ydc-content-slide ydc-body">
+        <div class="ydc-flex">
+            <!-- right begin -->
+            <div class="ydc-column ydc-column-8">
+                <div class="ydc-release-content">
+                    <div class="ydc-tabPanel ydc-tabPanel-release">
+                        <div class="ydc-release-tab-head">
+                            <ul>
+                                <li class="hit" id="mainTitle"></li>
+                            </ul>
+                        </div>
+                        <div class="ydc-panes">
+                            <div class="ydc-pane" style="display:block;">
+
+                                <div class="ydc-group-table" id="result">
+
+                                </div>
+                                <div class="ydc-group-altogether">共<span id="count"></span>条内容</div>
+                            </div>
+                            <div class="ydc-pagination">
+                                <ol>
+                                    <li class="ydc-previous-item">
+                                        <button class="ydc-previous-item-btn-medium ydc-disabled">
+                                            <span>上一页</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="ydc-previous-item-btn-medium cur">1</button>
+                                    </li>
+                                    <li>
+                                        <button class="ydc-previous-item-btn-medium">2</button>
+                                    </li>
+                                    <li>
+                                        <button class="ydc-previous-item-btn-medium">3</button>
+                                    </li>
+                                    <li class="ydc-previous-item">
+                                        <button class="ydc-previous-item-btn-medium">
+                                            <span>下一页</span>
+                                        </button>
+                                    </li>
+                                    <li class="ydc-item-quick">
+                                        第<div class="ydc-item-quick-kun"><input type="number" aria-invalid="false" class=""></div>页
+                                        <button style="margin-left:5px;" class="ydc-previous-item-btn-medium">
+                                            <span>跳转</span>
+                                        </button>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- right end -->
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

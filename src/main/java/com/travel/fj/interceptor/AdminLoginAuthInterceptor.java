@@ -1,0 +1,40 @@
+package com.travel.fj.interceptor;
+
+
+import org.springframework.lang.Nullable;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+public class AdminLoginAuthInterceptor implements HandlerInterceptor {
+
+
+     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
+
+         HttpSession session= request.getSession();
+         if(session.getAttribute("logonAdmin")!=null){
+                return true;
+         }
+
+         else{
+             response.sendRedirect("/admin/requireLogin");
+             return false;
+         }
+     }
+
+
+     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+                            @Nullable ModelAndView modelAndView) throws Exception {
+
+    }
+
+
+     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+                                 @Nullable Exception ex) throws Exception {
+    }
+
+}

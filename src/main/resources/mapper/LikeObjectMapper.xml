@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.travel.fj.dao.LikeObjectDao">
+
+    <insert id="createLikeRecord" parameterType="LikeObject">
+        insert into tbl_work_like(like_work_id,like_user_id) values (#{likeWorkId},#{likeUserId})
+    </insert>
+
+    <!--针对点赞查询单一记录用-->
+    <select id="getUserLikeRecordByUserIdAndWorkId" resultType="LikeObject" >
+        select * from tbl_work_like where like_user_id=#{uid} and like_work_id=#{wid}
+    </select>
+
+    <!--用户中心我的收藏用-->
+    <select id="getUserLikeRecordByUserId" resultType="LikeObject" >
+        select * from tbl_work_like where like_user_id=#{uid}
+    </select>
+
+    <delete id="deleteLikeRecordById" parameterType="int">
+        delete from tbl_work_like where like_id=#{id}
+    </delete>
+</mapper>
