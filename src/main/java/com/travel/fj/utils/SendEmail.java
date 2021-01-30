@@ -31,6 +31,7 @@ public class SendEmail {
         properties.put("mail.smtp.auth", IS_AUTH);
         properties.put("mail.smtp.ssl.enable", IS_SSL_ENABLE);// 设置是否使用ssl安全连接 ---一般都使用
         properties.put("mail.debug", IS_DEBUG);// 设置是否显示debug信息 true 会在控制台显示相关信息
+        System.out.println("Test!"+TEST_STR);
 
         return properties;
     }
