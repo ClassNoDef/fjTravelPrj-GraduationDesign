@@ -21,6 +21,7 @@ public class SendEmail {
     private static final Boolean IS_DEBUG=true;
     private static final String SENDER_ADD="1490920024@qq.com";
     private static final String SENDER_PWD="rcjmdxqvdjgpiggc";
+    private static final String TEST_STR="POSIX";
 
     private Properties getEmailProperties(){
         Properties properties = new Properties();
